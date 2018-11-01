@@ -1,0 +1,37 @@
+Model Checking Security Protocols
+
+Prof. Jacobs already mentioned in out kickoff meeting that model checking has already been successfully applied to formally analyze security protocols. This is an useful form of verifying the security of such protocols because it is very hard to do by hand, simply because arbitrarily many runs are interleaved in the presence of an adversary.
+
+The Paper we are presenting today explains the foundaitions that are necessary to understand more about this particular application of model checking including different approaches with their advantages and disadvantages and including problems that are currently being worked on.
+
+Important Assumptions we make regarding the adversary and the power it has:
+- Knowledge of all long-term public keys of participating units taking part in the protocol execution
+- Complete control over the network the protocol is run on (intercept, redirect and alter data)
+- Show this on example of attack on needham Schroeder Protocol
+	This is a visual representation of the Needham schroeder protocol. The goal of this particular protocol is to allow two agents (called A, in the role of the initiator and B, in the role of the responder here) to authenticate each other. This means that both agents can be sure that they are communicating with A/B respectively after execution of the protocol.
+	
+	A starts by generating a random nonce which is sent to B, encrypted using the public Key of B. The 'a' exponent indicates that this is an asymetric encryption, which means that this ciphertext can only be decrypted using the key sk(B), which is the secret key belonging to B. B now mirrors this behaviour and A responds by sending the by B generated nonce back to B, again encrypted using the public key of B.
+
+	This protocol can be attacked using a man in the middle attack in which the adversary imporsonates agent B when interacting with agent A and impersonates agent A when interacting with agent B.
+	
+	(Explain attack in figure 24.2) TODO think exactly about what to mention here etc
+	
+	Now since B thinks he is communicating with A and vice versa, they both expect that N_a and N_b are only known to them. This security assumption that no agents reveal any secrets is cearly violated as the adversary has knowledge over both nonces after this attack.
+	
+	
+- The Model checker is used to find all possible ways an adversary can interact with a protocol executing by using arbitrary combinations of interception, redirection and so on. -> State space infinite but problem decidable under certain restrictions.
+
+The basis of all applications of model checking cryptographic protocols is the Dolev Yao Model. This symbolic approach assumes that the only way for an adversary to decrypt a ciphertext is to have access to the decryption key.
+
+In this model the secrecy problem is undecidable if the number of sessions and nonces is unbounded, however it was shown to be NP-complete if the number of sessions is bounded as shown by During et al. This is very important as most realistic attacks on protocols require only a few sessions, see for example the attack on Needham schroeder which interleaves 2 sessions.
+
+In the Formal model chapter, the paper presents a basic symbolic model for formalizing and reasoning about security protocols. The model is symbolic to counter state explosion, because instead of concrete values being assigned to variables, general assumptions and/or constraints are associated with variables. The adversary 'works' on these Variables using inference rules which define the knowledge of the adversary.
+- Show example of Inference rule for learning ciphertext under assumption that Attacker knowledge contains key. This is an inference rule which proofs that the Neetham Schroeder Protocol is not secure against an adversary with the assumptions we made, as it was able to gain access to the secret N_a.
+
+On Example of Simple Protocol (Fig. 24.3):
+	- Explain what protocol is
+	- Explain what agents are
+	- Explain what threads are
+	- Explain what events are
+
+Another important assumption we make is that some agents participating in the protocol are already compromised, which meants that the adversary has access to their long-term private keys. This is modeled by splitting the Agents into a set of honest and a set of compromised agents.
