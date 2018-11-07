@@ -1,0 +1,62 @@
+- Model Checking already applied to formally analyze security protocols
+- Useful because very hard by hand 
+- arbitrary runs are interleaved in presence of adversary
+
+- Paper explains foundations to understand more about application of model Checking
+- Different approaches: advantages/disadvantages
+- Problems that are currently being worked on
+
+Assumptions on adversary power:
+- Knowledge public keys
+- Control over Network
+
+Example of Needham Schroeder:
+- Goal: Authenticate 2 Agents: Initiator, Responder
+X (Explain protocol)
+- Can be attacked using Man in the Middle attack
+- Adversary impersonates agent B when interacting with Agent A,...
+    - Results in initiator encrypting with key under adversary control
+    - In Dolev Yao Model we can apply inference rule of asymetric encryption
+    - Think of M as the Attacker Knowledge
+    - Leaning Nonce allows Adversary to forward it encrypted to receiver
+    - no way of recognizing that message did not originate from legitimate initiator
+- Adversary learns A's randomly generated Nonce (Dolev Yao Inference Rule) 
+- and Nonce of B after receiving this message here applying the same Rule
+- Security assumption violated, Adversary knows both secrets
+
+Model Checker can be used to find these kind of attacks
+- all possible ways to interact
+- infinite state space, decidable under restrictions
+
+- Basis of all applications of model checking crypto prot. is Dolev Yao Model
+- Symbolic Approach
+- Only way to decryt is to know corresponding decryption key
+- Secrecy undeciable is number of sessions,nonces unbounded
+- NP complete if number of sessions bounded
+- Realistic attacks only require few sessions, see NS
+
+
+Formal Model Chapter
+- basic symbolic model for formalizing and reasoning about security protocols
+- Symbolic to counter state explosion
+- instead of concrete values, assumptions/constraints associated with variables
+- Inference Rules applies on these variables like shown in NS
+
+
+Important terms that one should know when working with such a model:
+- Protocol: 
+    - Maps role names to event sequences
+    X (Show on initiator role NS)
+
+- Events:
+    - Each sending or receiving performed by agents as part of protocol
+
+- Threads:
+    - unlimited amount of instances interleaved
+    - To argue about concrete instance, term thread
+
+Another important assumption made in paper:
+- Same agents are compromised, splitting agents into 2 sets
+- adversary access to their secret keys
+- Check if any secret value of honest agent can be compromised
+    

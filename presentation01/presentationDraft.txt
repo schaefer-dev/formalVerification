@@ -31,8 +31,8 @@ In this model the secrecy problem is undecidable if the number of sessions and n
 In the Formal model chapter, the paper presents a basic symbolic model for formalizing and reasoning about security protocols. The model is symbolic to counter state explosion, because instead of concrete values being assigned to variables, general assumptions and/or constraints are associated with variables. On these variables inference Rules are being applied like the one for asymetric encryption used in the attack on Needham Schroeder.
 
 Important terms that one should know about are
-    Protocol, which maps from role names to event sequences, so in our Needham Schroeder example We have agent A here, which first sends this ciphertext, then it receives this message and sends another message. All these actions the agent performs are called Events.
+    Protocol, which maps from role names to event sequences, so in our Needham Schroeder example We have agent A which describes the role of the initiator. This role starts by sending a message to its partner, then it waits for a message of this particular form and afterwards sends another message. Each sending and receiving of messages performed by agents are so called Events.
 
-    Protocols are executed by agents who execute roles, thereby instantiating role names with agent names. Agents may execute each role multiple times. To distuinguish between multiple executions of a role threads are used to describe a running instace of a role.
+    I already mentioned that an unlimited amount of instances can be interleaved in the presence of the adversary. To argue about a concrete instance of a role that is being executed, the term thread is being used.
 
 Another important assumption that was made in the paper, is that some agents participating in the protocol are already compromised, which meants that the adversary additionally has access to their long-term private keys. This is modeled by splitting the Agents into a set of honest and a set of compromised agents and checking if any secret value of an honest agent can be compromised.
