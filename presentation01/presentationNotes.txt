@@ -8,7 +8,7 @@
 
 Assumptions on adversary power:
 - Knowledge public keys
-- Control over Network
+- Control over Network (intercept, modify, read)
 
 Example of Needham Schroeder:
 - Goal: Authenticate 2 Agents: Initiator, Responder
@@ -25,20 +25,20 @@ X (Explain protocol)
 - Security assumption violated, Adversary knows both secrets
 
 Model Checker can be used to find these kind of attacks
-- all possible ways to interact
+- all possible ways of the adversary to interact with arbitrary interleavings
 - infinite state space, decidable under restrictions
 
 - Basis of all applications of model checking crypto prot. is Dolev Yao Model
-- Symbolic Approach
 - Only way to decryt is to know corresponding decryption key
 - Secrecy undeciable is number of sessions,nonces unbounded
-- NP complete if number of sessions bounded
-- Realistic attacks only require few sessions, see NS
+- NP complete if number of sessions bounded, which is a very important property as
+- Realistic attacks usually only require few sessions, see NS
 
 
 Formal Model Chapter
-- basic symbolic model for formalizing and reasoning about security protocols
-- Symbolic to counter state explosion
+- inroduced a basic symbolic model for formalizing and reasoning 
+  about security protocols
+- Model is Symbolic to counter state explosion
 - instead of concrete values, assumptions/constraints associated with variables
 - Inference Rules applies on these variables like shown in NS
 

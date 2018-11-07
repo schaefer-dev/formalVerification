@@ -24,7 +24,7 @@ Important Assumptions we make regarding the adversary and the power it has:
 	
 - Now a Model checker can be used to find these kinds of attacks. By checking all possible ways an adversary can interact with a protocol by using arbitrary combinations of interception, redirection and so on. It should be very obvious that this causes the state space infinite but the problem remains decidable under certain restrictions.
 
-The basis of all applications of model checking cryptographic protocols is the Dolev Yao Model, which I already mentioned regarding the applied inference rule in the attack on Needham Schroeder. This symbolic approach assumes that the only way for an adversary to decrypt a ciphertext is to have access to the corresponding decryption key.
+The basis of all applications of model checking cryptographic protocols is the Dolev Yao Model, which I already mentioned regarding the applied inference rule in the attack on Needham Schroeder. This approach assumes that the only way for an adversary to decrypt a ciphertext is to have access to the corresponding decryption key. It also gives the adversary control over the entire network.
 
 In this model the secrecy problem is undecidable if the number of sessions and nonces is unbounded, however it was shown to be NP-complete if the number of sessions is bounded as shown by During et al. This is very important as most realistic attacks on protocols require only a few sessions, see for example the attack on Needham schroeder which interleaves 2 sessions.
 
