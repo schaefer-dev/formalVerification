@@ -13,25 +13,26 @@ Important Assumptions we make regarding the adversary and the power it has:
 	A starts by generating a random nonce which is sent to B, encrypted using the public Key of B. The 'a' exponent indicates that this is an asymetric encryption, which means that this ciphertext can only be decrypted using the key sk(B), which is the secret key belonging to B. B now mirrors this behaviour and A responds by sending the by B generated nonce back to B, again encrypted using the public key of B.
 
 	This protocol can be attacked using a man in the middle attack in which the adversary imporsonates agent B when interacting with agent A and impersonates agent A when interacting with agent B.
-	
-	(Explain attack in figure 24.2) TODO think exactly about what to mention here etc
-	
-	Now since B thinks he is communicating with A and vice versa, they both expect that N_a and N_b are only known to them. This security assumption that no agents reveal any secrets is cearly violated as the adversary has knowledge over both nonces after this attack.
-	
-	
-- The Model checker is used to find all possible ways an adversary can interact with a protocol executing by using arbitrary combinations of interception, redirection and so on. -> State space infinite but problem decidable under certain restrictions.
 
-The basis of all applications of model checking cryptographic protocols is the Dolev Yao Model. This symbolic approach assumes that the only way for an adversary to decrypt a ciphertext is to have access to the decryption key.
+    This results in the initiator encrypting its randomly generated Nonce with a key under control of the adversary, which means that the Adversary learns this randomly generated Nonce. In the Dolvey-Yao modeled adversary this is defined over inference Rules, which in this case state that the adversary which has knowledge of this cyphertext and the inverse function of this public key, which is the adversaries secret key learns the plaintext contained in the message.
+
+    Learning the initiator generated nonce allows the adversary to send this nonce in encrypted form to the responder, who has no way of knowing that this Message did not originate from the correct initiator.
+        
+	
+	Now since B thinks he is communicating with A and vice versa, they both expect that their secret Nonces N_a and N_b are only known to them. This security assumption that no agents reveal any secrets is cearly violated as the adversary has knowledge over both nonces after this attack.
+	
+	
+- Now a Model checker can be used to find these kinds of attacks. By checking all possible ways an adversary can interact with a protocol by using arbitrary combinations of interception, redirection and so on. It should be very obvious that this causes the state space infinite but the problem remains decidable under certain restrictions.
+
+The basis of all applications of model checking cryptographic protocols is the Dolev Yao Model, which I already mentioned regarding the applied inference rule in the attack on Needham Schroeder. This symbolic approach assumes that the only way for an adversary to decrypt a ciphertext is to have access to the corresponding decryption key.
 
 In this model the secrecy problem is undecidable if the number of sessions and nonces is unbounded, however it was shown to be NP-complete if the number of sessions is bounded as shown by During et al. This is very important as most realistic attacks on protocols require only a few sessions, see for example the attack on Needham schroeder which interleaves 2 sessions.
 
-In the Formal model chapter, the paper presents a basic symbolic model for formalizing and reasoning about security protocols. The model is symbolic to counter state explosion, because instead of concrete values being assigned to variables, general assumptions and/or constraints are associated with variables. The adversary 'works' on these Variables using inference rules which define the knowledge of the adversary.
-- Show example of Inference rule for learning ciphertext under assumption that Attacker knowledge contains key. This is an inference rule which proofs that the Neetham Schroeder Protocol is not secure against an adversary with the assumptions we made, as it was able to gain access to the secret N_a.
+In the Formal model chapter, the paper presents a basic symbolic model for formalizing and reasoning about security protocols. The model is symbolic to counter state explosion, because instead of concrete values being assigned to variables, general assumptions and/or constraints are associated with variables. On these variables inference Rules are being applied like the one for asymetric encryption used in the attack on Needham Schroeder.
 
-On Example of Simple Protocol (Fig. 24.3):
-	- Explain what protocol is
-	- Explain what agents are
-	- Explain what threads are
-	- Explain what events are
+Important terms that one should know about are
+    Protocol, which maps from role names to event sequences, so in our Needham Schroeder example We have agent A here, which first sends this ciphertext, then it receives this message and sends another message. All these actions the agent performs are called Events.
 
-Another important assumption we make is that some agents participating in the protocol are already compromised, which meants that the adversary has access to their long-term private keys. This is modeled by splitting the Agents into a set of honest and a set of compromised agents.
+    Protocols are executed by agents who execute roles, thereby instantiating role names with agent names. Agents may execute each role multiple times. To distuinguish between multiple executions of a role threads are used to describe a running instace of a role.
+
+Another important assumption that was made in the paper, is that some agents participating in the protocol are already compromised, which meants that the adversary additionally has access to their long-term private keys. This is modeled by splitting the Agents into a set of honest and a set of compromised agents and checking if any secret value of an honest agent can be compromised.
