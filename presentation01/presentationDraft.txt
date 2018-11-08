@@ -1,6 +1,6 @@
 Model Checking Security Protocols
 
-Prof. Jacobs already mentioned in out kickoff meeting that model checking has already been successfully applied to formally analyze security protocols. This is an useful form of verifying the security of such protocols because it is very hard to do by hand, simply because arbitrarily many runs are interleaved in the presence of an adversary.
+Prof. Jacobs already mentioned in our kickoff meeting that model checking has already been successfully applied to formally analyze security protocols. This is an useful form of verifying the security of such protocols because it is very hard to do by hand, simply because arbitrarily many runs are interleaved in the presence of an adversary.
 
 The Paper we are presenting today explains the foundaitions that are necessary to understand more about this particular application of model checking including different approaches with their advantages and disadvantages and including problems that are currently being worked on.
 
