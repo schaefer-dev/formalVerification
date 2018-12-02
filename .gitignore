@@ -3,6 +3,8 @@
 #####=== TeX ===#####
 finalReport/*.pdf
 finalReport/*.vtc
+sampleReport/*.pdf
+sampleReport/*.vtc
 
 
 ## Core latex/pdflatex auxiliary files:
