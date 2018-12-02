@@ -1,8 +1,8 @@
 #### joe made this: https://goel.io/joe
 
 #####=== TeX ===#####
-finalReport/lipics-v2018-sample-article.pdf
-finalReport/lipics-v2018-sample-article.vtc
+finalReport/*.pdf
+finalReport/*.vtc
 
 
 ## Core latex/pdflatex auxiliary files:
