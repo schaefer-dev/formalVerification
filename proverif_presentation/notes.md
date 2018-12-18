@@ -114,3 +114,121 @@ With all the clauses we built the secrecy criterion is quite obvious. We have to
 If this fact can be derived, the sequence of clauses applied to derive it directly lead to the description of the attack.
 
 So in the next slides we will learn how proverif is able to check if a fact can be derived from the set of clauses that resulted from the translation of our protocol description.
+
+
+# 15 Resolution
+The problem of  determining whether a given fact can be derived from a set of clauses is exactly the problem solved by usual Prolog systems. However, we cannot use such systems here, because they would not terminate, which is quite obvious looking at this clause which would lead to considering more and more complex terms with an unbounded number of encryptions. 
+
+Basically it would encrypt a message, then encrypt the encrypted message again and so on.
+
+So the main idea of ProVerif’s approach is to instead combine pairs of clauses by resolution, and to guide this resolution process by a clever free selection function.
+
+
+# 16 Resolution 2
+This is the formal definition of resolution given in the paper, you don’t have to look at it now - its much easier to grasp with a simple example. We have two clauses R and R’ here. The Idea of resolution is to combine these two clauses into one, which represents the application of one after the other. To achieve this, the selection function selects a Fact, called F0, in the Hypothesis of the second Clause and as you can see this fact is part of R’s conclusion but in a more specified version.
+This means that we can unify them using a function sigma.
+
+# 17 Resolution 3
+This function sigma describes the most general unifier of the selected clause and the Conclusion of the first Clause. Which is denoted by the colours here. This means that we map all variables in the selected hypothesis of the second clause to the terms their variables are replaced with in the conclusion of the first Clause R. 
+
+
+# 18 Resolution 4
+Using this unifier function sigma we can built the resulting clause by connecting the Hypothesis of the first clause with the remaining hypothesises of the second clause that were not previously selected. The conclusion remains the conclusion of the second Clause.
+
+It is important to keep in mind, that the unifier function has to be applied to all parts of the resulting clause. In this case that meant that we have to replace the ‘m’ in the conlusion of the second Clause with the signed message sigma maps it to. Same applies to sk being mapped to x.
+
+What happened here is the basic idea of how to combine two clauses with each other using resolution with a free selection function.
+
+
+# 19 Saturate
+Obviously all this happens automatically in ProVerif for all combinations of Clauses with different selected Facts. All this is the so called ‘saturate’ phase. In this phase ProVerif basically tries to minimize the set of clauses until no selection of facts in a clauses hypothesis would allow any other clause to be unified with it.
+
+In more detail this means that we start by removing all subsumed clauses from the set of clauses that our protocol and attacker got translate to. 
+This basically means that we eliminate clauses that are already expressed inside other clauses.
+Afterwards we add new clauses that can be created using resolution, like we did in the example on the previous slide. After each clause that is being added, we remove all subsumed clauses again. We repeat this process of unifying clauses until we reach a fixpoint.
+What remains is a set of clauses in which we can not select any hypothesis to unify them with any other clauses.
+
+This saturate algorithm transforms the initial set of clauses into a new one that still derives the same facts, which means that saturate is both sound and complete.
+
+
+# 20 Algorithm 
+This saturate function is the first essential step in ProVerif’s Algorithm. The resulting set of clauses is passed to the so called derivation search together with a fact that depends on the secrecy criterion we would like to proof.
+
+This input Fact F of the derivation search specifies the fact we try to derive from the set of clauses R1. So in our example it would be attacker(s), to check whether or not the attacker is able to gain knowledge of some secret value s.
+
+# 21 Derivation Search
+The derivation search performs backward depth first search on applications of the resulting set of clauses. 
+If such a derivation result exists, it also enables proverif to reconstruct how the attack happened using the derivation tree.
+
+If no such derivation exists, we have proven our secrecy criterion holds on our simplified set of clauses, and because of the soundness and completeness of saturate, this criterion also holds on the set of clauses that were directly translated from our protocol specification.
+
+
+# 22 Termination
+I already mentioned that ProVerif does not guarantee termination in general. However in practice it terminates in most examples according to the paper. Blanchet and Podelski were able to prove that proverif always terminates on the so called set of ‘tagged Protocols’.
+
+They consider protocols that use as cryptographic primitives only public-key encryption and signatures with atomic keys, shared-key encryption, message authentication codes, and hash functions. Basically, a protocol is tagged when each application of a cryptographic primitive is marked with a distinct constant tag. It is easy to transform a protocol into a tagged protocol by adding tags and generally considered good practice as it avoids type-flaw attacks that could be enabled by confusion between messages.
+
+Most importantly the addition of tagging to a protocol preserves the expected behaviour of the protocol.
+
+
+# 23 Limitations of Proverif
+Like I mentioned multiple times already the main limitation of ProVerif is that termination is not guaranteed unless working on a tagged protocol, as shown on the previous slide.
+The Possibility of false attacks being considered by ProVerif is also tedious, because it forces a human to look at the attack output to decide whether it is valid or not. False attacks appear in particular for protocols with temporary secrets: when some value first needs to be kept secret and is revealed later in the protocol, the Horn clause model considers that this value can be reused in the beginning of the protocol, thus breaking the protocol
+
+The main reason for such false attacks are the details that are being lost when translating the specified protocol into a set of horn clauses.
+Specifically, the number of repetitions of each action is ignored, since Horn clauses can be applied any number of times. So a step of the protocol can be completed several times, as long as the previous steps have been completed at least once between the same principals.
+
+
+# 24 Advantages of Proverif
+However, the important point is that the approximations are sound: if an attack exists in a more precise model, such as the applied pi calculus or multiset rewriting, then it also exists in the Horn clause representation. 
+
+Performing approximations enables ProVerif to build a much more efficient verifier, which will be able to handle larger and more complex protocols. Another advantage is that the verifier does not have to limit the number of runs of the protocol. Which makes it perfectly suited for the Certification of protocols, because a proof performed by proverif holds regardless of the number of protocol-runs and message size.
+
+The approximations we performed are the key to achieve such strong guarantees and circumvent the state space explosion problem most verifiers struggle with by abstracting much further away from the protocol itself.
+
+Proverif is also considered a very flexible verifier because it is able to prove various security properties.
+
+Can handle a wide range of cryptographic primitives, specified by rewrite rules or by equations. 
+
+ProVerif was also extended to allow for input of Equational theories, which is necessary to model special properties of some cryptography, e.g. modular exponentiation used in a Diffie-Hellman key exchange. This is a big deal because without equational theories we would not be able to specify protocols which use modular exponentiation or e.g. the application of a XOR operation, because both can not be directly represented by a constructor or destructor definition. These Equational theories are automatically translated into rewrite rules by proverif so they require no additional work for the user.
+
+
+
+# 26 Optimisations
+Because I still have some time left for my presentation I would like to take a look at some optimisations proverif performs during the saturate process we discussed earlier to increase both the performance of the algorithm and the likelihood to terminate. The optimisations are part of the reason ProVerif is considered a very efficient verifier.
+
+The most obvious optimisation is that all tautologies are removed. A tautology is a clause that trivially holds because its conclusion is already part of the hypothesis, so obviously we don’t need to keep those clauses.
+
+Another obvious one is the removal of duplicate hypothesis, to make sure that each  part of the hypothesis is unique and not repeated unnecessarily.
+
+Both these optimisations can be considered standart for logic operations.
+
+
+# 27 Optimisations 2
+However there are also more sophisticated optimisations performed by proverif which are specific to protocols.
+
+The first of those optimisation is the removal of hypothesis attacker(x) when x does not appear anywhere else in the clause. We are able to do this, because this hypothesis attacker(x) would intuitively mean that the attacker has access to at least one message of some value x. It is clear that this assumption trivially holds and does not make much sense without x appearing somewhere else in the clause.
+
+The Elimination of all clauses containing hypothesis attacker(s) is also very important as it removes a lot of clauses entirely for many different protocols. Intuitively the removal of all clauses containing this hypothesis means that we do not consider any clauses that already assume that the attacker has access to some secret information, as that would mean that the protocol is already broken. It is important to note, that this optimisation never causes proverif to wrongly claim that a protocol is secure.
+
+The last optimization that is performed is the decomposition of data constructors. For any data constructor, that is contained in the protocol specification (for example touples), proverif translates it into these two Horn clauses.
+The first clause simply defines the computational ability of the attacker to apply this constructor and the second clause defines that attacker(f(p1, . . . , pn)) is derivable if and only if ∀i ∈ {1, . . . , n}, attacker(xi) is derivable.
+
+
+# 28 Optimisations 3
+Now what proverif does, is it replaces all facts of this form, with a fact of this form. And if this replacement happens in a conclusion of a clause, like it does for our first example clause, we generate N clauses instead for each separate attacker(Xi).
+
+This would result in this set of Clauses for first example clause.
+And this Clause for our second clause.
+
+This replacement is done recursively, so if there is another constructor in Xi, this one is replaced again and so on.
+
+As you can already notice in this example, this optimisations causes many clauses to be eliminated, because they become tautologies or are subsumed by other clauses.
+
+
+
+# 30 Demo
+If you are still interested in the ProVerif Verifier I can highly recommend taking a look at this website.
+It allows you to load many already defined security protocols (secure ones and flawed ones) and you can change details of those protocols or simply enter any protocol of your choice manually and try to verify it using ProVerif.
+
+I would highly recommend looking at the HTML output of the demo instead of the commandline output for easier readability.
