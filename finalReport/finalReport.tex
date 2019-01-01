@@ -1,6 +1,6 @@
 \documentclass[a4paper,UKenglish]{lipics-v2018}
 \usepackage{microtype}%if unwanted, comment out or use option "draft"
-\bibliographystyle{plainurl}% the recommnded bibstyle
+\bibliographystyle{plainurl}
 
 \title{Formal Methods for Security - Final Report}
 
@@ -19,33 +19,57 @@ In this course we generally talked about various methods of model-checking secur
 \end{abstract}
 
 
+\newpage
 \section{Model Checking Security Protocols}
-% TODO
+
+This paper written by Basin et al. Outlines the difficulties of analyzing a security protocol in an automated fashion. The hardness of this particular problem specifically originates from the non-deterministic adversary, that is able to interact with arbitrary many protocol-executions that are being interleaved. Interaction with the executions in this case means, that the adversary is in control of the network that the protocol is executed on, which means that it can intercept, redirect and alter any data that is being sent.\cite{model_checking_security_protocols}
+
+During et al. were able to proof that the secrecy problem is undecidable for such an attacker model if the number of protocol executions and random values (nonces) are unbounded.\cite{DLMS99} If one is able to keep the number of protocol executions bounded the secrecy problem was proven to be NP-complete by Rusinowitch and Turuani.\cite{RT01} This proof motivated development of model checkers in which the user explicitly specifies the number of protocol executions the model checker should search through which are in fact still useful in practice as most attacks on realistic protocols only require a few sessions.\cite{model_checking_security_protocols}
+
+This attacker model is also called the Dolev-Yao attacker model. Many approaches of model checking cryptographic protocols adopted this attacker model and use it as part of an approach called 'Dolev-Yao symbolic model', which is explained in detail by Basin et al. in chapter 24.3 \cite{model_checking_security_protocols}.
+% TODO: MAYBE: Pick important parts of definitions and list them here or a bit later maybe
+
+In a symbolic model, messages are being represented by terms which formulate certain assumptions, essentially defining constraints on variables instead of arguing about concrete values. This measure is taken to counter the problem of state space explosion.\cite{model_checking_security_protocols}
+% TODO: MAYBE: Define State space explosion?
+
+% TODO: MAYBE: explain Notion of Secrecy and Weak Aliveness
+% TODO: MAYBE: Forward vs Backwards Search?
+% TODO: MAYBE: Link to computational soundness
+% TODO: MAYBE: Non-Trace properties: e.g. non-interference, observational equivalence
 
 
+
+\newpage
 \section{Language Based Information Flow Security}
-% TODO
+Sabelfeld at al. explain a promising new approach to guarantee that secret input data is not being 'leaked' to an attacker which observes the system output. This language-based technique, working on program semantics and analysis, relies on enforcing information-flow policies in source-code. Goal of these policies is to achieve data confidentiality.\cite{language_based_information_flow_security}
+
+
+% TODO:
 
 
 
+\newpage
 \section{Secure Information flow by self-composition}
-% TODO
+% TODO:
 
 
 
+\newpage
 \section{Automated Analysis of Cryptographic Protocols using Murphi}
-% TODO
+% TODO:
 
 
 
+\newpage
 \section{SAT based model-checking for security protocol analysis}
-% TODO
+% TODO:
 
 
 
+\newpage
 \section{Automatic Verification of Security Protocols in the Symbolic Model: the Verifier ProVerif}
 Example citation \cite{ProVerif}
-% TODO
+% TODO:
 
 
 
