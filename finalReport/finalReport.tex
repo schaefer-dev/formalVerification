@@ -41,10 +41,21 @@ In a symbolic model, messages are being represented by terms which formulate cer
 
 \newpage
 \section{Language Based Information Flow Security}
-Sabelfeld at al. explain a promising new approach to guarantee that secret input data is not being 'leaked' to an attacker which observes the system output. This language-based technique, working on program semantics and analysis, relies on enforcing information-flow policies in source-code. Goal of these policies is to achieve data confidentiality.\cite{language_based_information_flow_security}
 
+Sabelfeld at al. explain a promising new approach to guarantee that secret input data is not being 'leaked' to an attacker which observes the system output. This language-based technique, working on program semantics and analysis, relies on enforcing information-flow policies in source-code. Goal of these policies is to achieve properties like data confidentiality and noninterference.\cite{language_based_information_flow_security}
 
-% TODO:
+The approach, called "Information-flow control" is a mechanisms to enforce such policies. The analysis that is performed must then proof that no information flow exists, that would violate the previously specified policies.\cite{language_based_information_flow_security}
+
+There are a significant number of channels one could leak information over, which are not directly transfering data. This is very obvious for the example of "termination channels" and "timing channels", which are related to an attackers ability to observe the behaviour of the program execution. This means that e.g. the duration of an computation or the non-termination of the program might leak information about secret values that were used as part of these computations.
+The same applies to a number of additional channels, which are also not used to transfer data but still offer possible information leaks.\cite{language_based_information_flow_security} % TODO: List other Covert Channels
+
+The focus in this paper is on a type checking approach to perform static information-flow analysis on compile time. Such a approach has already been implemented in the Jif compiler for Java.\cite{JFlow} The general idea is that a \textit{security type} is assigned to every program expression. This security type contains the ordinary type of the expression (such as int, float, string, etc.) and additionally a static label which describes how the resulting value can be used. This value is static and not determined on runtime, such that it can be used to verify the control flow on compile-time already.\cite{language_based_information_flow_security}
+To be able to track implicit flows correctly, dependencies of the program-counter are additionally tracked.
+
+The advantage of performing verification on compile time, compared to checking during runtime is that one is not limited to a single program execution, instead one can proof security of all possible program paths.\cite{language_based_information_flow_security}
+
+% TODO: second half of this paper basically not contained in this summary
+% TODO: Problems with this paper/approach
 
 
 
@@ -77,3 +88,4 @@ Example citation \cite{ProVerif}
 
 
 \end{document}
+1

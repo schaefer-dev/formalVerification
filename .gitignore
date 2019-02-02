@@ -5,6 +5,7 @@ finalReport/*.pdf
 finalReport/*.vtc
 sampleReport/*.pdf
 sampleReport/*.vtc
+finalReport/__latexindent_temp.tex
 
 
 ## Core latex/pdflatex auxiliary files:
