@@ -8,6 +8,8 @@
 \authorrunning{Daniel Schaefer}
 \renewcommand{\copyrightline}{}
 
+\def\murphi{Mur$\phi$ }
+
 \begin{document}
 \maketitle
 
@@ -66,8 +68,23 @@ The advantage of performing verification on compile time, compared to checking d
 
 
 \newpage
-\section{Automated Analysis of Cryptographic Protocols using Murphi}
-% TODO:
+\section{Automated Analysis of Cryptographic Protocols using \murphi}
+
+\murphi is a tool to analyze cryptographic protocols using a state enumeration approach. In a feasibility study it was able to outperform similar finite-state exploration tools on the protocols that were tested. Notable difference were the more efficient approach of \murphi to counteract the State-space explosion problem and the ability to set interrupt points to guide the search by hand, which can also be helpful to work around the State-space explosion problem.\cite{murphi}
+
+\murphi performs explicit state enumeration using either breadth-first or depth-first search to proof that all reachable states satisfy some specification that is given by the user. The protocol has to be specified using the \murphi language, which can be extended to contain additional information for an attacker such as leaking some supposedly secret values initially which would reflect the assumption that part of the system was compromised already. Due to the fact that \murphi performs explicit state enumeration, one has to limit the number of states, which is done by fixing system size parameters, such as the number of agents that perform the cryptographic protocol with each other. These limitations have to be specifially set by the user and \murphi is only able to guarantee correctness of this "down-scaled" version of the protocol. Clearly it is not trivial to set these numbers, as larger values often have exponential effect on the runtime of the tool.\cite{murphi}
+
+Performance of \murphi is significantly improved using a hash table which stores the reached states as this avoids recomputation when visiting the same state again in the future. The memory used by this hash table is typically a limitation of the \murphi tool.\cite{murphi}
+% TODO: maybe list other features that significantly improve performance, quite a lot of them
+
+Formulating a protocol in the \murphi language reveals some issues a user might have. It is important to simplify to protocol and only modeling the key steps and primitives that are necessary to perform the protocol. This is particularly important to reduce the number of states that are explicitly enumerated. Additionally it is essential to define precisely which messages will be accepted or declined by each participant of the protocol and also how these messages are formated, because \murphi uses shared variables to communicate. These shared variables are accessable by an attacker, which is part of the ability of a Dolev-Yao attacker (network under control of adversary).\cite{murphi}
+
+Similar issues arise when formulating an adversary to a protocol. The user has to specify the entire knowledge of the adversary and a finite set of actions that the adversary could perform at any point in time depending on the knowledge the adversary has gathered until this point.\cite{murphi}
+
+% TODO: IMPORTANT: explain when/how 'wrong' error traces occur and how one specifies protocol/attacker around these
+
+% TODO: maybe list problems/results from modeling the protocols that are listed throughout the entire paper
+
 
 
 
@@ -88,4 +105,3 @@ Example citation \cite{ProVerif}
 
 
 \end{document}
-1
