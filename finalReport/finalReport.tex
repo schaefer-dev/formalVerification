@@ -63,7 +63,25 @@ The advantage of performing verification on compile time, compared to checking d
 
 \newpage
 \section{Secure Information flow by self-composition}
-% TODO:
+
+Type systems are a way to enforce secure information flow of a program but are hard to extend, which is particularly disadvantagous when additions have to be made to verify a new security policy. An alternative to these type systems is to use a more flexible approach of program logics, which this publication focuses on. Barthe et al. build on to the idea of self composition, which reduces the problem to a safety property of the composition of a program with itself.\cite{information_flow_by_self_composition}
+
+Information flow properties are properties that correspond to at least two execution traces, instead of a safety property. Barthe et al. were able to proof that non-interference of some program p can be reduced to a property about every single program execution of a new program that can be constructed using P and P' (which is a renaming of P).\cite{information_flow_by_self_composition}
+% TODO: paragraph above maybe to close to paper wording?
+
+This knowledge can be used to apply (sound) programming logics to characterise non-interferance in an alternative way. The publication provides a theory to prove non-interferance using self-composition.
+
+The definition of the indistinguishability relation determines wheather memories can be distinguished or not which makes this approach very flexible, as it allows a user to specify that some information can be 'leaked' without being a violation to our safety property.\cite{information_flow_by_self_composition}
+
+A limitation of the approach that was presented in this paper, is the limitation to abstract values of variables\cite{information_flow_by_self_composition}, which means that one can not perform any operations on pointer-types. This implies that control-flow of a program can not depend on memory allocation. It remains to be seen if this limitation can be overcome by extending the presented approach or by translating these cases into an equivalent form using only abstract values.
+
+% TODO: explain self-composition here more, how the Program is built from P and P'
+
+
+
+
+
+
 
 
 
