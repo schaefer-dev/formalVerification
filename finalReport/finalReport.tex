@@ -129,8 +129,20 @@ Conducted experiments indicated that the resulting formula scales better with a 
 
 \newpage
 \section{Automatic Verification of Security Protocols in the Symbolic Model: the Verifier ProVerif}
-Example citation \cite{ProVerif}
-% TODO:
+
+Proverif is a Verifier that works in the symbolic model, which makes it easier to perform fully automatic verification. A special property of this verifier is that it is able to verify protocols assuming an unbounded number of protocol executions. Because this is a generally undecidable problem, Proverif can not guarantee termination in all cases.\cite{ProVerif}
+
+The protocol has to be specified in an extension of the pi calculus, which already supports a wide variety of cryptographic primitives out of the box. On this protocol, Proverif is able to proof a variety of security properties such as for example secrecy, authentication and some properties of observational equivalence.\cite{ProVerif}
+
+Proverif's efficieny comes from the automatic translation into horn clauses. Not only the protocol itself is represented in these clauses, but rather the attacker combined with the protocol. One could say that proverif abstracts much further away from the actual protocol than most approaches we encountered in this seminar. The set of horn clauses is internally simplified using resolution and additional optimisations. Particularly the optimisations which are specific to protocols reduce the number of clauses very significantly. Bruno Blanchet was able to proof that all these approximations are sound, which is essential to their usage as part of a verifier. All these approximations result in Proverif being able to handle very complex protocols.\cite{ProVerif}
+
+However there are a couple of tradeoffs, these approximations introduce. The two most impactful ones are, that the order of actions is abstracted entirely and that each action can be repeated an unbounded number of times at any later time. Particularly for protocols that contain temporary secrets, there is a possibility of Proverif outputting a false attack.
+This means that one has to additionally double-check an attack that is output by Proverif for validity. \cite{ProVerif}
+
+The ability to verify protocols without limitations on the number of sessions or the message size imply that Proverif is well suited to be used for the certification of protocols.\cite{ProVerif}
+
+
+
 
 
 
