@@ -90,7 +90,7 @@ A limitation of the approach that was presented in this paper, is the limitation
 
 \murphi is a tool to analyze cryptographic protocols using a state enumeration approach. In a feasibility study it was able to outperform similar finite-state exploration tools on the protocols that were tested. Notable difference were the more efficient approach of \murphi to counteract the State-space explosion problem and the ability to set interrupt points to guide the search by hand, which can also be helpful to work around the State-space explosion problem.\cite{murphi}
 
-\murphi performs explicit state enumeration using either breadth-first or depth-first search to proof that all reachable states satisfy some specification that is given by the user. The protocol has to be specified using the \murphi language, which can be extended to contain additional information for an attacker such as leaking some supposedly secret values initially which would reflect the assumption that part of the system was compromised already. Due to the fact that \murphi performs explicit state enumeration, one has to limit the number of states, which is done by fixing system size parameters, such as the number of agents that perform the cryptographic protocol with each other. These limitations have to be specifially set by the user and \murphi is only able to guarantee correctness of this "down-scaled" version of the protocol. Clearly it is not trivial to set these numbers, as larger values often have exponential effect on the runtime of the tool.\cite{murphi}
+\murphi performs explicit state enumeration using either breadth-first or depth-first search to proof that all reachable states satisfy some specification that is given by the user. The protocol has to be specified using the \murphi language, which can be extended to contain additional information for an attacker such as leaking some supposedly secret values initially which would reflect the assumption that part of the system was compromised already. Due to the fact that \murphi performs explicit state enumeration, one has to limit the number of states, which is done by fixing system size parameters, such as the number of agents that perform the cryptographic protocol with each other. These limitations have to be specifially set by the user and \murphi is only able to guarantee correctness of this "down-scaled" version of the protocol. Clearly it is not trivial to set these numbers, as larger values often have exponential effect on the runtime of the tool.\cite{murphi} Regardless, it is an advantage that these bounds can easily be changed by a user.
 
 Performance of \murphi is significantly improved using a hash table which stores the reached states as this avoids recomputation when visiting the same state again in the future. The memory used by this hash table is typically a limitation of the \murphi tool.\cite{murphi}
 % TODO: maybe list other features that significantly improve performance, quite a lot of them
@@ -108,7 +108,22 @@ Similar issues arise when formulating an adversary to a protocol. The user has t
 
 \newpage
 \section{SAT based model-checking for security protocol analysis}
-% TODO:
+
+This approach interprets violations of a protocol as reachability problens, which means that one can apply any SAT solver to solve this issue efficietly. To achieve this, one has to build a propositional formula which models possible attacks on the protocol. If the SAT solver that is used to check this propositional formula for satisfiability is able to find a solution, this solution specifies an attack on the protocol and the protocol was proven to be insecure for the specified bounds.\cite{sat}
+
+A significant advantage of using a SAT solver as a blackbox to verify the security of a protocol, is that all improvement in the field of SAT solvers can be equally used to enhance this approach. The already very efficient modern SAT solvers lead to very promising results in the experimental protocol verification that was performed by Armando etl al. Their approach already achieved similar performance than state of the art alternatives.\cite{sat}
+
+The specification of possible attacks on the protocol that leads to the propositional formula is performed by using a framework based on multi-set rewriting. The number of sessions has to be bounded, such that the problem remains decidable.\cite{sat}
+
+% TODO: page 4 left side upper 1/3, it sounds almost like this bound does not change much, because there is always a bound k that it can be safely reduced to
+
+The authors provide semantics to perform this multi-set-rewriting to generate the propositional formula. They additionally developed an approach of how to safely eliminate non-determinism, which is e.g. associated with the generation of random values.
+Encoding techniques that were originally developed for planning to security protocols were adapted to be applicable to increase efficiency of the formula generation. Armando et al. were able to proof both soundness and completeness of this modified approach.\cite{sat}
+
+Conducted experiments indicated that the resulting formula scales better with a large number of agents and sessions, but worse with an increased message size, when compared to current state-of-the-art alternatives.\cite{sat}
+
+
+% TODO: mention maybe future extension to LTL
 
 
 
