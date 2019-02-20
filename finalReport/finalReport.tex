@@ -142,8 +142,32 @@ This means that one has to additionally double-check an attack that is output by
 The ability to verify protocols without limitations on the number of sessions or the message size imply that Proverif is well suited to be used for the certification of protocols.\cite{ProVerif}
 
 
+\newpage
+\section{Secure Information Flow as a Safety Problem}
+
+% TODO bibtex sources here
+
+Aiken et. al. developed a framework which improves on traditional type-based approaches and works better than the standart self composition approach, as formulated by Barthe, D'Argenio and Rezk. The authors apply  self-composition approach with the addition of information downgrading.
+
+It is important to note, that only deterministic programs are being considered in this publication. 
+
+The authors were able to reduce an alternative definition of termination-insensitive Secure Information Flow to a safety problem by making use of self-composition as part of their reduction. According to the authors it would be relatively easy to define a similar property for termination sensitive secure information flow using a liveness property.
+
+To overcome the limitation of Secure Information Flow being considered too strict for many applications, Aiken et. al. introduced the ability to downgrade information, inspired by Barthe, D'Argenio and Rezk. Output is then allowed to depend on the downgraded parts of high variables, which can e.g. be used to leak the length of some secret information while still keeping the secret information itself unknown.
+
+Unfortunatly, the self-composition approach seems to be too inefficient in practice, even combined with state-of-the-art safety analysis tools like BLAST. According to the authors of this publication it seems unlikely that any future advances in this field will change that. 
+
+To overcome the issues of self-composition, Aiken et. al. first apply a type-directed transformation, which depends on a type system and outputs a program that is equivalent to the self-composition of the initial program. A specific type system for this usecase can be used to simplify the output program while maintaining important properties for safety analysis. This relatively inexpensive transformation causes the programs to be more digestible for the analysis tools, which makes is a clear  improvement on the type-based approach.
+
+% TODO: Section 3
 
 
+\newpage
+\section{Automatic Discovery and Quantification of Information Leaks}
+
+
+\newpage
+\section{Verifying Constant-Time Implementations}
 
 
 \bibliography{finalReport}
