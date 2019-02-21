@@ -147,23 +147,39 @@ The ability to verify protocols without limitations on the number of sessions or
 
 % TODO bibtex sources here
 
-Aiken et. al. developed a framework which improves on traditional type-based approaches and works better than the standart self composition approach, as formulated by Barthe, D'Argenio and Rezk. The authors apply  self-composition approach with the addition of information downgrading.
+Aiken et. al. developed a framework which improves on traditional type-based approaches and works better than the standart self composition approach, as formulated by Barthe, D'Argenio and Rezk. The authors apply  self-composition approach with the addition of information downgrading.\cite{secure_information_flow_safety}
 
 It is important to note, that only deterministic programs are being considered in this publication. 
 
-The authors were able to reduce an alternative definition of termination-insensitive Secure Information Flow to a safety problem by making use of self-composition as part of their reduction. According to the authors it would be relatively easy to define a similar property for termination sensitive secure information flow using a liveness property.
+The authors were able to reduce an alternative definition of termination-insensitive Secure Information Flow to a safety problem by making use of self-composition as part of their reduction. According to the authors it would be relatively easy to define a similar property for termination sensitive secure information flow using a liveness property.\cite{secure_information_flow_safety}
 
-To overcome the limitation of Secure Information Flow being considered too strict for many applications, Aiken et. al. introduced the ability to downgrade information, inspired by Barthe, D'Argenio and Rezk. Output is then allowed to depend on the downgraded parts of high variables, which can e.g. be used to leak the length of some secret information while still keeping the secret information itself unknown.
+To overcome the limitation of Secure Information Flow being considered too strict for many applications, Aiken et. al. introduced the ability to downgrade information, inspired by Barthe, D'Argenio and Rezk. Output is then allowed to depend on the downgraded parts of high variables, which can e.g. be used to leak the length of some secret information while still keeping the secret information itself unknown.\cite{secure_information_flow_safety}
 
-Unfortunatly, the self-composition approach seems to be too inefficient in practice, even combined with state-of-the-art safety analysis tools like BLAST. According to the authors of this publication it seems unlikely that any future advances in this field will change that. 
+Unfortunatly, the self-composition approach seems to be too inefficient in practice, even combined with state-of-the-art safety analysis tools like BLAST. According to the authors of this publication it seems unlikely that any future advances in this field will change that.\cite{secure_information_flow_safety}
 
-To overcome the issues of self-composition, Aiken et. al. first apply a type-directed transformation, which depends on a type system and outputs a program that is equivalent to the self-composition of the initial program. A specific type system for this usecase can be used to simplify the output program while maintaining important properties for safety analysis. This relatively inexpensive transformation causes the programs to be more digestible for the analysis tools, which makes is a clear  improvement on the type-based approach.
+To overcome the issues of self-composition, Aiken et. al. first apply a type-directed transformation, which depends on a type system and outputs a program that is equivalent to the self-composition of the initial program. A specific type system for this usecase can be used to simplify the output program while maintaining important properties for safety analysis. This relatively inexpensive transformation causes the programs to be more digestible for the analysis tools, which makes is a clear  improvement on the type-based approach.\cite{secure_information_flow_safety}
 
 % TODO: Section 3
 
 
 \newpage
 \section{Automatic Discovery and Quantification of Information Leaks}
+
+Backes et al. developed an approach to not only discover information leaks but additionally specify which information is leaked and quantify that information leak.\cite{automatic_discovery_and_quantification}
+
+Their solution provides the number of discovered equivalence classes and their respective sizes, without having to specify the equivalence relation manually. While existing qualitative approaches are able to e.g. determine the number of secret bits that are leaked, they do not provide a comprehensive measure to establish security guarantees.\cite{automatic_discovery_and_quantification}
+
+The approach described in this publication starts by using an initial candidate, which is assumed to be the equivalence relation. It then refines the relation step by step until no further leaks are found in the current equivalence relation. This problem is formulated as a reachability problem and solved by a model-checker, which is used as a blackbox.\cite{automatic_discovery_and_quantification}
+
+The resulting equivalence relation essentially describes what an attacker can learn about the input of the program by observing the programs output behaviour. The cardinality of these classes can be computed using LATTE.\cite{automatic_discovery_and_quantification}
+
+On the computed equivalence classes they apply Shannon Entropy, Guessing Entropy, Channel Capacity etc. to interpret the classes. This leads to easily human-readable metrics, such as the attackers uncertainty about the secret bits before and after a single guess.\cite{automatic_discovery_and_quantification}
+
+A advantage of this approach is that while the used model-checkers are not complete, they are sound which means that they might introduce an over-approximation of information leakage, but never an under-approximation. This means that the described approach can be used to certify the security of a program.\cite{automatic_discovery_and_quantification} Clearly, the over-approximation can also be a disadvantage in some cases. 
+
+Another limitation of the described algorithms, is that they assume the termination of the program on any provided input.
+
+The experimental results contained in this publication should also be seen as an indicator that this approach might not be feasable in practice. Main reason for this is the runtime their algorithm takes even on simplified problems.\cite{automatic_discovery_and_quantification}
 
 
 \newpage
