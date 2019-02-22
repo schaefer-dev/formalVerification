@@ -145,9 +145,9 @@ The ability to verify protocols without limitations on the number of sessions or
 \newpage
 \section{Secure Information Flow as a Safety Problem}
 
-% TODO bibtex sources here
-
 Aiken et. al. developed a framework which improves on traditional type-based approaches and works better than the standart self composition approach, as formulated by Barthe, D'Argenio and Rezk. The authors apply  self-composition approach with the addition of information downgrading.\cite{secure_information_flow_safety}
+
+% TODO: cite Barthe D'Argentio and Rezk
 
 It is important to note, that only deterministic programs are being considered in this publication. 
 
@@ -185,7 +185,27 @@ The experimental results contained in this publication should also be seen as an
 \newpage
 \section{Verifying Constant-Time Implementations}
 
+An entirely new attack vector, that is very hard to avoid entirely are so called timing attacks. Developing software which adheres to constant-time practices is not only very error-prone but also bottlenecks efficiency of software. In fact there have been a number of occasions were timing-based attacks were discovered on widely used software such as for example OpenSSL's RSA decryption.
 
+% Maybe mention recent intel bugs with cache collisions here
+
+Almeida et al. propose a new approach, called "ct-verif" to automatically verify whether  or not a timing attack is possible on the software that is being verified. In order to include most compiler-optimizations in their baseline of testing, their approach verifies LLVM assembly code, which also makes the approach easily transferable to all languages that can be compiled to LLVM assembly.\cite{verifying_constant_time_implementations}
+
+A commonly used guideline to secure software against such kind of attacks is that branching never depends on program secrets in any way. An even stronger policy would be that accesses memory addresses, and their order of access do not depend on any secrets as well. Clearly programmers are forced to deviate from conventional practices to fullfill policies like these.\cite{verifying_constant_time_implementations}
+
+The tool ct-verif is fully automatic after the user specified which inputs and outputs are public to an attacker. A program P's program paths are independant of all program-secrets if assertion-safety of a program Q that is essentially a product of the P with itself holds.\cite{verifying_constant_time_implementations} Clearly, the construction of Q is inspired by self-composition. 
+
+Almeida et al. additionally provided a proof in Coq, which verified this reduction to be both sound and complete.\cite{verifying_constant_time_implementations}
+
+Additionally Almeida et al. provided a formalization of constant-time theory, which provides a foundation for constant-time policies used in practice.
+
+It was demonstrated on examples such as OpenSLL, NaCl, FourQlib and others, which supported the practical effectiveness of ct-verif. Overall the case study showed, that ct-verif is able to validate significantly more constant-time programs than the previously existing tools.\cite{verifying_constant_time_implementations}
+
+A potential problem of this approach is that it works on LLVM assembly, instead of machine code and while the LLVM assembly might fullfill the desired constant time policy, it is not entirely clear wheather this also holds for the resulting machine code in all cases.\cite{verifying_constant_time_implementations}
+
+
+
+\newpage
 \bibliography{finalReport}
 
 
