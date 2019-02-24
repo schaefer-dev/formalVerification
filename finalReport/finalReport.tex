@@ -14,14 +14,22 @@
 \maketitle
 
 \begin{abstract}
-In this course we generally talked about various methods of model-checking security protocols. Later on here should be a text that summarizes the idea and findings of the seminar.\\
-% TODO Extend
+In this course we generally talked about various formal methods of verifying security of software or protocols. The papers that were part of the reading seassion build a basis regarding model-checking in this field and a commonly occuring approach of self-composition, which was used to verify secure information flow of some program.
 
-\includegraphics[scale = 0.72]{pictures/grading_scheme}\\
+The main problem of the model-checking approach was the state-space explosion problem, which gets introduced by the infinite number of sessions that the nondeterministic adversary is able to interact with. One way to overcome this issue is by 'redirecting' it to the user of the verifier, who inputs upper bounds for e.g. the number of sessions that are executed in parallel. While this makes the state-space finite, it clearly also weakens the security proof as there might be an attack which requires more sessions than the bound was set to.
+
+A different approach is taken by tools such as \textit{ProVerif}, which abstracts much further away from the protocol executions themselves by building an alternative representation of the protocol which intuitively combines the protocol with the attacker already. While this does not guarantee termination as the state-space is still infinite it has proven itself to terminate most of the time in practice and requires much less human-intervention which obviously decreases the risk of \textit{human error}.
+
+Information flow verification also turned out to be a prominent alternative by using the approach of \textit{self-composition} to formulate a safety property on a self-composed program which guarantees some security policy on the original program such as \textit{noninterference}. With such static language-based analysis at compile time it is possible to express end-to-end security policies but unfortunatly these systems are quite hard to extend and every extension would require a new soundness proof.
+
+Other notable concepts that were contained in this seminar was e.g. the idea by Backes et al. to quantify information leaks, instead of only discovering them. While the performance of the presented tool indicated that the taken approach might not be feasable in practice, it was still a very interresting idea to quantify the amount of secret information that gets leaked. It could be particularly interresting in very performance-criticial scenarios in which adhering to some secrecy policy might be impossible, but one could use the quantification of leaks to find the best tradeoff between performance and security.
+
+The last publication of the seminar focuses entirely on timing-based attacks, which are often forgotten about but are clearly a huge thread in practice. The presented tool automatically verified the abscence of such type of an attack entirely, by performing static analysis on LLVM assembly making use of a \textit{self-composition} approach.
+% TODO: summarize idea and findings of the seminar
 \end{abstract}
 
 
-\newpage
+%\newpage
 \section{Model Checking Security Protocols}
 
 This paper written by Basin et al. outlines the difficulties of analyzing a security protocol in an automated fashion. The hardness of this particular problem specifically originates from the non-deterministic adversary, that is able to interact with arbitrary many protocol-executions that are being interleaved. Interaction with the executions in this case means, that the adversary is in control of the network that the protocol is executed on, which means that it can intercept, redirect and alter any data that is being sent.\cite{model_checking_security_protocols}
@@ -52,9 +60,9 @@ Overall this paper summarizes a large number of important terms, security proper
 
 Sabelfeld et al. explain a promising new approach to guarantee that secret input data is not being 'leaked' to an attacker which observes the system's output. This language-based technique, working on program semantics and analysis, relies on enforcing information-flow policies in source-code. Goal of these policies is to achieve properties like data confidentiality and noninterference.\cite{language_based_information_flow_security}
 
-The approach, called "Information-flow control" is a mechanism to enforce such policies. The analysis that is performed must then proof that no information flow exists, that would violate the previously specified policies.\cite{language_based_information_flow_security}
+The approach, called \textit{Information-flow control} is a mechanism to enforce such policies. The analysis that is performed must then proof that no information flow exists, that would violate the previously specified policies.\cite{language_based_information_flow_security}
 
-There are a significant number of channels one could leak information over, which are not directly transfering data. An example for such channels would be "termination channels" and "timing channels", which are related to an attackers ability to observe the behaviour of the program execution additionally to its output. This means that e.g. the duration of an computation or the non-termination of the program might leak information about secret values that were used as part of these computations.
+There are a significant number of channels one could leak information over, which are not directly transfering data. An example for such channels would be \textit{termination channels} and \textit{timing channels}, which are related to an attackers ability to observe the behaviour of the program execution additionally to its output. This means that e.g. the duration of an computation or the non-termination of the program might leak information about secret values that were used as part of these computations.
 The same applies to a number of additional channels, which are also not used to transfer data but still offer possible information leaks.\cite{language_based_information_flow_security} % TODO: List other Covert Channels
 
 The focus of this paper is on a type checking approach to perform static information-flow analysis at compile time. Such an approach has already been implemented in the Jif compiler for Java.\cite{JFlow} The general idea is that a \textit{security type} is assigned to every program expression. This security type contains the ordinary type of the expression (such as int, float, string, etc.) and additionally a static label which describes how the resulting value can be used. This value is static and not determined on runtime, such that it can be used to verify the control flow on compile-time already.\cite{language_based_information_flow_security}
@@ -217,7 +225,8 @@ It was demonstrated on examples such as OpenSLL, NaCl, FourQlib and others, whic
 
 A potential problem of this approach is that it works on LLVM assembly, instead of machine code and while the LLVM assembly might fullfill the desired constant time policy, it is not entirely clear wheather this also holds for the resulting machine code in all cases.\cite{verifying_constant_time_implementations}
 
-
+\newpage
+\includegraphics[scale = 0.72]{pictures/grading_scheme}\\
 
 \newpage
 \bibliography{finalReport}
