@@ -47,7 +47,7 @@ Overall this paper summarizes a large number of important terms, security proper
 
 
 
-\newpage
+%\newpage
 \section{Language Based Information Flow Security}
 
 Sabelfeld et al. explain a promising new approach to guarantee that secret input data is not being 'leaked' to an attacker which observes the system's output. This language-based technique, working on program semantics and analysis, relies on enforcing information-flow policies in source-code. Goal of these policies is to achieve properties like data confidentiality and noninterference.\cite{language_based_information_flow_security}
@@ -71,46 +71,47 @@ This publication serves as an overview of current research in the field of infor
 
 
 
-\newpage
+%\newpage
 \section{Secure Information flow by self-composition}
 
-Type systems are a way to enforce secure information flow of a program but are generally hard to extend, which is particularly disadvantagous when additions have to be made to verify a new security policy. This was one of the problems the previously presented publication by Sabelfeld et al. was still facing.\cite{language_based_information_flow_security} 
+Type systems are a way to enforce secure information flow of a program but are generally hard to extend, which is particularly disadvantagous when additions have to be made to verify a new security policy. This was one of the problems the previously presented publication by Sabelfeld et al. was still facing.
+\cite{language_based_information_flow_security} 
 
-An alternative to these type systems is to use a more flexible approach of program logics, which this publication focuses on. Barthe et al. build on to the idea of self-composition, which reduces the problem to a safety property of the composition of a program with itself. Self-composition is essentially composing the program $P$ with a renaming of itself, resulting in a new program $Q$.
+An alternative to these type systems is to use a more flexible approach of program logics, which this publication focuses on. Barthe et al. extended the idea of self-composition which reduces the problem to a safety property of the composition of a program with itself. Self-composition is essentially composing the program $P$ with a renaming of itself, resulting in a new program $Q$ that is used during the verification process.
 \cite{information_flow_by_self_composition}
 
-Information flow properties are properties that correspond to at least two execution traces and can not be represented directly by a safety property. To overcome this problem, Barthe et al. were able to proof that non-interference of some program $P$ can be reduced to a property about every single program execution of a new program $Q$ that can be constructed using $P$ and a renaming of $P$, using the above mentioned approach of self-composition.\cite{information_flow_by_self_composition}
+Information flow properties are properties that correspond to at least two execution traces and can not be represented directly using a safety property. To overcome this problem, Barthe et al. were able to proof that non-interference of some program $P$ can be reduced to a property about every single program execution of a new program $Q$ that can be constructed using $P$ and a renaming of $P$, using the above mentioned approach of self-composition.
+\cite{information_flow_by_self_composition}
 % TODO: paragraph above maybe to close to paper wording?
 
-This reduction opens up a new way to apply (sound) programming logics to characterise non-interferance in an alternative way using this constructed program $Q$. This approach additionally allows a user to specify that some information can be leaked without violating the safety property immediately by defining the so called indistinguishability relation accordingly. This relation intuitively defines, which outputs should be considered equal or different, which affects the attackers ability to distinguish them. There are many cases in which such\textit{minor information leaks} are necessary to maintain the usefulness of a program.\cite{information_flow_by_self_composition}
+This reduction opens up a new way to apply (sound) programming logics to characterise non-interferance in an alternative way using this constructed program $Q$. The approach additionally allows a user to specify that some information can be leaked without violating the safety property immediately by defining the so called \textit{indistinguishability relation} accordingly. This relation intuitively defines, which outputs should be considered equal or different, which affects the attackers ability to distinguish them. There are many cases in which such minor information leaks are necessary to maintain the usefulness of a program. A practical example of this would be for example, that an adversary is unable to distinguish between two secret lists, if their average value is equal.
+\cite{information_flow_by_self_composition}
 
-A problem of the approach that was presented in this paper, is the limitation to abstract values of variables\cite{information_flow_by_self_composition}, which means that one can not perform any operations on pointer-types. This implies that control-flow of a program can not depend on memory allocation. It remains to be seen if this limitation can be overcome by extending the presented approach or by translating these cases into an equivalent form using only abstract values.
+A problem of the approach that was presented in this paper, is the limitation to abstract values of variables
+\cite{information_flow_by_self_composition}, which means that one can not perform any operations on pointer-types. This implies that control-flow of a program can not depend on memory allocation. It remains to be seen if this limitation can be overcome by extending the presented approach or by translating these cases into an equivalent form using only abstract values.
 
 Still, the approach has to be considered very flexible as it can be used to proof a variety of policies without proving soundness repeatedly. Especially compared to security-type systems this is a clear advantage.
 
-% TODO: explain self-composition here more, how the Program is built from P and P'
+Overall this paper provided a foundation for the application of self-composition in the field of securing information-flow in programms. The authors provided proofs for their entire formal theory, which makes this publication very suited to build on top of.
 
 
 
 
-
-
-
-
-
-\newpage
+%\newpage
 \section{Automated Analysis of Cryptographic Protocols using \murphi}
 
-\murphi is a tool to analyze cryptographic protocols using a state enumeration approach. In a feasibility study it was able to outperform similar finite-state exploration tools on the protocols that were tested. Notable difference were the more efficient approach of \murphi to counteract the State-space explosion problem and the ability to set interrupt points to guide the search by hand, which can also be helpful to work around the State-space explosion problem.\cite{murphi}
+\murphi is a tool to analyze cryptographic protocols using a state enumeration approach. In a feasibility study it was able to outperform similar finite-state exploration tools on the protocols that were tested. Notable difference were the more efficient approach of \murphi to counteract the state-space explosion problem and the ability to set interrupt points to guide the search by hand, which can also be helpful to work around the state-space explosion problem.\cite{murphi}
 
-\murphi performs explicit state enumeration using either breadth-first or depth-first search to proof that all reachable states satisfy some specification that is given by the user. The protocol has to be specified using the \murphi language, which can be extended to contain additional information for an attacker such as leaking some supposedly secret values initially which would reflect the assumption that part of the system was compromised already. Due to the fact that \murphi performs explicit state enumeration, one has to limit the number of states, which is done by fixing system size parameters, such as the number of agents that perform the cryptographic protocol with each other. These limitations have to be specifially set by the user and \murphi is only able to guarantee correctness of this "down-scaled" version of the protocol. Clearly it is not trivial to set these numbers, as larger values often have exponential effect on the runtime of the tool.\cite{murphi} Regardless, it is an advantage that these bounds can easily be changed by a user.
+\murphi performs explicit state enumeration using either breadth-first or depth-first search to proof that all reachable states satisfy some specification that is provided by the user. The protocol has to be specified using the \murphi language, which can be extended to contain additional information for an attacker, such as leaking some supposedly secret values initially which would reflect the assumption that part of the system was compromised already prior to the attack. Due to the fact that \murphi performs explicit state enumeration, one has to limit the number of states, which is done by fixing system size parameters, such as the number of agents that perform the cryptographic protocol with each other. These limitations have to be specifially set by the user and \murphi is only able to guarantee correctness of this down-scaled version of the protocol. Clearly it is not trivial to set these numbers, as larger values often have exponential effect on the runtime of the tool.\cite{murphi} Regardless, it is an advantage that these bounds can easily be changed by a user. At the same time it is a disadvantage that the proof only holds for this down-scaled version of the protocol because there might be an attack possible which e.g. requires more active sessions.
 
-Performance of \murphi is significantly improved using a hash table which stores the reached states as this avoids recomputation when visiting the same state again in the future. The memory used by this hash table is typically a limitation of the \murphi tool.\cite{murphi}
+Performance of \murphi is significantly improved using a hash table which stores the reached states as this avoids recomputation when visiting the same state again in the future. The memory used by this hash table is typically the biggest limitation of the \murphi tool.\cite{murphi}
 % TODO: maybe list other features that significantly improve performance, quite a lot of them
 
-Formulating a protocol in the \murphi language reveals some issues a user might have. It is important to simplify to protocol and only modeling the key steps and primitives that are necessary to perform the protocol. This is particularly important to reduce the number of states that are explicitly enumerated. Additionally it is essential to define precisely which messages will be accepted or declined by each participant of the protocol and also how these messages are formated, because \murphi uses shared variables to communicate. These shared variables are accessable by an attacker, which is part of the ability of a Dolev-Yao attacker (network under control of adversary).\cite{murphi}
+Formulating a protocol in the \murphi language reveals some issues a user might have. It is important to simplify to protocol and only modeling the key steps and primitives that are necessary to perform the protocol. This is particularly important to reduce the number of states that are explicitly enumerated. Additionally it is essential to define precisely which messages will be accepted or declined by each participant of the protocol and also how these messages are formated, because \murphi uses shared variables to communicate. These shared variables are accessable by an attacker, which models part of the ability of a Dolev-Yao attacker (network under control of adversary).\cite{murphi}
 
 Similar issues arise when formulating an adversary to a protocol. The user has to specify the entire knowledge of the adversary and a finite set of actions that the adversary could perform at any point in time depending on the knowledge the adversary has gathered until this point.\cite{murphi}
+
+Clearly the user has to make a significant amount of non-trivial decisions before being able to run \murphi verification. This introduces quite a big risk of \textit{human error} introducing mistakes in e.g. the adversaries abilities, which might lead the \murphi tool to miss attacks. While the results of their study look promising compared to alternative tools, it is certainly a tool that requires at the very least a experienced user to minimize the risk of \textit{human error} invalidating the tools results. One might argue that this risk is too high to use this tool as the only form of validation.
 
 % TODO: IMPORTANT: explain when/how 'wrong' error traces occur and how one specifies protocol/attacker around these
 
