@@ -24,7 +24,7 @@ Information flow verification also turned out to be a prominent alternative by u
 
 Other notable concepts that were contained in this seminar was e.g. the idea by Backes et al. to quantify information leaks, instead of only discovering them. While the performance of the presented tool indicated that the taken approach might not be feasable in practice, it was still a very interresting idea to quantify the amount of secret information that gets leaked. It could be particularly interresting in very performance-criticial scenarios in which adhering to some secrecy policy might be impossible, but one could use the quantification of leaks to find the best tradeoff between performance and security.
 
-The last publication of the seminar focuses entirely on timing-based attacks, which are often forgotten about but are clearly a huge thread in practice. The presented tool automatically verified the abscence of such type of an attack entirely, by performing static analysis on LLVM assembly making use of a \textit{self-composition} approach.
+The last publication of the seminar focuses entirely on timing-based attacks, which are often forgotten about but are clearly a huge thread in practice. The presented tool automatically verified the abscence of such type of an attack, by performing static analysis on LLVM assembly making use of a \textit{self-composition} approach.
 % TODO: summarize idea and findings of the seminar
 \end{abstract}
 
@@ -128,21 +128,37 @@ Clearly the user has to make a significant amount of non-trivial decisions befor
 
 
 
-\newpage
+%\newpage
 \section{SAT based model-checking for security protocol analysis}
 
-This approach interprets violations of a protocol as reachability problens, which means that one can apply any SAT solver to solve this issue efficietly. To achieve this, one has to build a propositional formula which models possible attacks on the protocol. If the SAT solver that is used to check this propositional formula for satisfiability is able to find a solution, this solution specifies an attack on the protocol and the protocol was proven to be insecure for the specified bounds.\cite{sat}
+This approach interprets violations of a protocol as reachability problens, which means that one can apply any SAT solver to solve the reachability problem efficietly. To achieve this, one has to build a propositional formula which models possible attacks on the protocol. If the SAT solver that is used to check this propositional formula for satisfiability is able to find a solution, this solution specifies an attack on the protocol and the protocol was proven to be insecure for the specified bounds.\cite{sat}
 
-A significant advantage of using a SAT solver as a blackbox to verify the security of a protocol, is that all improvement in the field of SAT solvers can be equally used to enhance this approach. The already very efficient modern SAT solvers lead to very promising results in the experimental protocol verification that was performed by Armando etl al. Their approach already achieved similar performance than state of the art alternatives.\cite{sat}
+A significant advantage of using a SAT solver as a blackbox to verify the security of a protocol, is that all improvement in the field of SAT solvers can be equally used to enhance this approach. The already very efficient modern SAT solvers lead to very promising results in the experimental protocol verification that was performed by Armando et al. Their approach already achieved similar performance than state of the art alternatives.
+\cite{sat}
 
-The specification of possible attacks on the protocol that leads to the propositional formula is performed by using a framework based on multi-set rewriting. The number of sessions has to be bounded, such that the problem remains decidable.\cite{sat}
+The specification of possible attacks on the protocol that leads to the propositional formula is performed by using a framework based on multi-set rewriting. Because solving protocol insecurity problems is undecidable for an unbounded number of sessions, the user has to specify such a bound to perform verification using this approach.
+\cite{sat}
 
 % TODO: page 4 left side upper 1/3, it sounds almost like this bound does not change much, because there is always a bound k that it can be safely reduced to
 
 The authors provide semantics to perform this multi-set-rewriting to generate the propositional formula. They additionally developed an approach of how to safely eliminate non-determinism, which is e.g. associated with the generation of random values.
-Encoding techniques that were originally developed for planning to security protocols were adapted to be applicable to increase efficiency of the formula generation. Armando et al. were able to proof both soundness and completeness of this modified approach.\cite{sat}
+Encoding techniques that were originally developed for planning to security protocols were adapted to be applicable to increase efficiency of the formula generation. Armando et al. were able to proof both soundness and completeness of this modified approach called \textit{SATMC}.
+\cite{sat}
 
-Conducted experiments indicated that the resulting formula scales better with a large number of agents and sessions, but worse with an increased message size, when compared to current state-of-the-art alternatives.\cite{sat}
+The resulting formula generated by \textit{SATMC} grows linearly with increasing number of facts and quadratically with the number of rules. Both the number of facts and rules grow exponentially with the size of the specified security protocol that is input. This is most likely the biggest disadvantage of this approach, which generally means it does not scale well with increasing complexity of the security protocol.
+\cite{sat}
+
+Conducted experiments indicated that the resulting formula scales better with a large number of agents and sessions, but worse with an increased message size, when compared to current state-of-the-art alternatives.
+\cite{sat}
+
+
+The same experiments also showed that the tool outperforms state-of-the-art protocol analysers even on industrial strength security protocols, which could be considered surprising considering the exponential scaling problem.
+\cite{sat}
+
+A great addition to this approach would be to allow security properties to be specified by generic \textit{LTL} formulae, which was also mentioned by the authors. This addition would significantly increase the possibilities in the specification of security properties.
+
+Compared to the \murphi verifier, \textit{SATMC} seems to be signficantly easier to model the protocol for, particularly because \murphi relies on the users optimizations of rules to reduce the state-space explosion problem. Regarding performance, \murphi seems to scale better with increasing message-depth, while \textit{SATMC} scales better with multiple agents.
+
 
 
 % TODO: mention maybe future extension to LTL
