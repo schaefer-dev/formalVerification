@@ -169,7 +169,7 @@ Compared to the \murphi verifier, \textit{SATMC} seems to be signficantly easier
 
 ProVerif is a security protocol verifier that works in the symbolic model, which makes it easier to perform fully automatic verification compared to the alternative cryptographic model. 
 %TODO mention approaches that also work in symbolic model here
-A special property of this verifier is that it is able to verify protocols without restricting the number of protocol executions to a set bound, like e.g. \murphi \cite{murphi} and \textit{SATMC}\cite{sat} did. Because the problem of deciding a security property on an unbounded number of protocol executions combined with a nondeterministic adversary is a generally undecidable problem, ProVerif can not guarantee termination in all cases. Intuitively ProVerif internally translates the protocol combined with the attacker to a set of horn clauses, which is essentially an improvement on tree-automate because it keeps relational information on messages. These abstractions are the reason ProVerif is able to handle many protocols despite the exponential blowup.\cite{ProVerif}
+A special property of this verifier is that it is able to verify protocols without restricting the number of protocol executions to a set bound, like e.g. \murphi \cite{murphi} and \textit{SATMC}\cite{sat} did. Because the problem of deciding a security property on an unbounded number of protocol executions combined with a nondeterministic adversary is a generally undecidable problem, ProVerif can not guarantee termination in all cases. Intuitively ProVerif internally translates the protocol combined with the attacker to a set of horn clauses, which is essentially an improvement on tree-automata because it keeps relational information on messages. These abstractions are the reason ProVerif is able to handle many protocols despite the exponential blowup.\cite{ProVerif}
 
 The input protocol has to be specified in an extension of the pi calculus, which already supports a wide variety of cryptographic primitives out of the box. Internally these primitives are modeled either as rewrite rules or equations. On this protocol, ProVerif is now able to proof a variety of security properties such as for example secrecy, authentication and some properties of observational equivalence.\cite{ProVerif}
 
@@ -191,24 +191,31 @@ It is also a interresting approach in general, because ProVerif abstracts much f
 
 
 
-\newpage
+%\newpage
 \section{Secure Information Flow as a Safety Problem}
 
-Aiken et. al. developed a framework which improves on traditional type-based approaches and works better than the standart self composition approach, as formulated by Barthe, D'Argenio and Rezk. The authors apply  self-composition approach with the addition of information downgrading.\cite{secure_information_flow_safety}
+Aiken et. al. developed a framework which improves on traditional type-based approaches and works better than the standart self composition approach, as formulated by Barthe, D'Argenio and Rezk.\cite{information_flow_by_self_composition}
+%TODO talk more about this paper which was contained in reading group
+The authors apply the self-composition approach (we already read about in the paper by Barthe, D'Argenio and Rezk) with the addition of information downgrading.\cite{secure_information_flow_safety}
 
-% TODO: cite Barthe D'Argentio and Rezk
+It is important to note, that only deterministic programs are being considered throughout this publication. 
 
-It is important to note, that only deterministic programs are being considered in this publication. 
+The authors were able to reduce an alternative definition of termination-insensitive secure information flow to a safety problem by making use of self-composition as part of their reduction. According to the authors it would be relatively easy to define a similar property for termination sensitive secure information flow using a liveness property.\cite{secure_information_flow_safety}
 
-The authors were able to reduce an alternative definition of termination-insensitive Secure Information Flow to a safety problem by making use of self-composition as part of their reduction. According to the authors it would be relatively easy to define a similar property for termination sensitive secure information flow using a liveness property.\cite{secure_information_flow_safety}
+Secure information flow can be considered too strict for many applications, because any dependency of an output value on some initial high-security variable would cause the verification to fail. To overcome this limitation, Aiken et. al. introduced the ability to downgrade information. Program output is then allowed to depend on the downgraded parts of high variables. This downgrading property is very flexible in terms of the information that can be downgraded, one could e.g. use it to allow leakage of the length of some secret information while still keeping the secret information itself entirely unknown.\cite{secure_information_flow_safety}
 
-To overcome the limitation of Secure Information Flow being considered too strict for many applications, Aiken et. al. introduced the ability to downgrade information, inspired by Barthe, D'Argenio and Rezk. Output is then allowed to depend on the downgraded parts of high variables, which can e.g. be used to leak the length of some secret information while still keeping the secret information itself unknown.\cite{secure_information_flow_safety}
+This is clearly a very desirable property as many programs will require such scenarios to maintain usability. For example a simple login will output some secret information in case of the user outputting the user inputting the correct pair of username and password. Such conditions can easily be represented in a downgrading policy, which makes information-flow in programs like these verifiable.\cite{secure_information_flow_safety}
 
-Unfortunatly, the self-composition approach seems to be too inefficient in practice, even combined with state-of-the-art safety analysis tools like BLAST. According to the authors of this publication it seems unlikely that any future advances in this field will change that.\cite{secure_information_flow_safety}
+Unfortunatly, the self-composition approach seems to be too inefficient in practice, even combined with state-of-the-art safety analysis tools like BLAST. In many of these cases a type-based approach will have no problem to verify programs that fail to terminate using the self-composition approach. According to the authors of this publication it seems unlikely that any future advances of tools like BLAST (or alternatives) will change that.\cite{secure_information_flow_safety}
 
-To overcome the issues of self-composition, Aiken et. al. first apply a type-directed transformation, which depends on a type system and outputs a program that is equivalent to the self-composition of the initial program. A specific type system for this usecase can be used to simplify the output program while maintaining important properties for safety analysis. This relatively inexpensive transformation causes the programs to be more digestible for the analysis tools, which makes is a clear  improvement on the type-based approach.\cite{secure_information_flow_safety}
+To overcome the issues of self-composition, Aiken et. al. decided to make use of some advantages a type-based approach brings. They first apply a type-directed transformation on the input program that has to be verified. This transformation depends on a type system and outputs a program that is equivalent to the self-composition of the initial program. A specific type system for this usecase can be used to simplify the output program while maintaining important properties for safety analysis. This relatively inexpensive transformation causes the programs to be more digestible for the analysis tools. 
+\cite{secure_information_flow_safety}
 
-% TODO: Section 3
+The result is clearly better than the type-based approach and improves the efficiency of the self-compositional approach significantly.
+\cite{secure_information_flow_safety}
+
+%TODO Section 3?
+%TODO this paper is quite rough
 
 
 \newpage
