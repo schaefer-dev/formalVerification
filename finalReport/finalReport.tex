@@ -14,6 +14,8 @@
 \maketitle
 
 \begin{abstract}
+
+%TODO Motivation? design of security protocols error prone, can not be detected by functional testing
 In this course we generally talked about various formal methods of verifying security of software or protocols. The papers that were part of the reading seassion build a basis regarding model-checking in this field and a commonly occuring approach of self-composition, which was used to verify secure information flow of some program.
 
 The main problem of the model-checking approach was the state-space explosion problem, which gets introduced by the infinite number of sessions that the nondeterministic adversary is able to interact with. One way to overcome this issue is by 'redirecting' it to the user of the verifier, who inputs upper bounds for e.g. the number of sessions that are executed in parallel. While this makes the state-space finite, it clearly also weakens the security proof as there might be an attack which requires more sessions than the bound was set to.
@@ -44,14 +46,14 @@ Still, this has to be considered a limitation as there might be attacks in pract
 
 Overall this paper summarizes a large number of important terms, security properties and other definitions that are helpful, specifically regarding to the application of model checking on security protocols. Later chapters provide examples of practical applications of such techniques using a variety of different ideas, including outlines of promising approaches for the future.
 
-% TODO: MAYBE: Pick important parts of definitions and list them here or a bit later maybe
+%TODO MAYBE: Pick important parts of definitions and list them here or a bit later maybe
 
-% TODO: MAYBE: Define State space explosion?
+%TODO MAYBE: Define State space explosion?
 
-% TODO: MAYBE: explain Notion of Secrecy and Weak Aliveness
-% TODO: MAYBE: Forward vs Backwards Search?
-% TODO: MAYBE: Link to computational soundness
-% TODO: MAYBE: Non-Trace properties: e.g. non-interference, observational equivalence
+%TODO MAYBE: explain Notion of Secrecy and Weak Aliveness
+%TODO MAYBE: Forward vs Backwards Search?
+%TODO MAYBE: Link to computational soundness
+%TODO MAYBE: Non-Trace properties: e.g. non-interference, observational equivalence
 
 
 
@@ -74,8 +76,8 @@ This publication serves as an overview of current research in the field of infor
 
 
 
-% TODO: second half of this paper basically not contained in this summary
-% TODO: Problems with this paper/approach
+%TODO second half of this paper basically not contained in this summary
+%TODO Problems with this paper/approach
 
 
 
@@ -90,7 +92,7 @@ An alternative to these type systems is to use a more flexible approach of progr
 
 Information flow properties are properties that correspond to at least two execution traces and can not be represented directly using a safety property. To overcome this problem, Barthe et al. were able to proof that non-interference of some program $P$ can be reduced to a property about every single program execution of a new program $Q$ that can be constructed using $P$ and a renaming of $P$, using the above mentioned approach of self-composition.
 \cite{information_flow_by_self_composition}
-% TODO: paragraph above maybe to close to paper wording?
+%TODO paragraph above maybe to close to paper wording?
 
 This reduction opens up a new way to apply (sound) programming logics to characterise non-interferance in an alternative way using this constructed program $Q$. The approach additionally allows a user to specify that some information can be leaked without violating the safety property immediately by defining the so called \textit{indistinguishability relation} accordingly. This relation intuitively defines, which outputs should be considered equal or different, which affects the attackers ability to distinguish them. There are many cases in which such minor information leaks are necessary to maintain the usefulness of a program. A practical example of this would be for example, that an adversary is unable to distinguish between two secret lists, if their average value is equal.
 \cite{information_flow_by_self_composition}
@@ -100,7 +102,7 @@ A problem of the approach that was presented in this paper, is the limitation to
 
 Still, the approach has to be considered very flexible as it can be used to proof a variety of policies without proving soundness repeatedly. Especially compared to security-type systems this is a clear advantage.
 
-Overall this paper provided a foundation for the application of self-composition in the field of securing information-flow in programms. The authors provided proofs for their entire formal theory, which makes this publication very suited to build on top of.
+Overall this paper provided a foundation for the application of self-composition in the field of securing information-flow in programms. The authors provided proofs for their entire formal theory, which makes this publication a great foundation to extend on.
 
 
 
@@ -121,9 +123,9 @@ Similar issues arise when formulating an adversary to a protocol. The user has t
 
 Clearly the user has to make a significant amount of non-trivial decisions before being able to run \murphi verification. This introduces quite a big risk of \textit{human error} introducing mistakes in e.g. the adversaries abilities, which might lead the \murphi tool to miss attacks. While the results of their study look promising compared to alternative tools, it is certainly a tool that requires at the very least a experienced user to minimize the risk of \textit{human error} invalidating the tools results. One might argue that this risk is too high to use this tool as the only form of validation.
 
-% TODO: IMPORTANT: explain when/how 'wrong' error traces occur and how one specifies protocol/attacker around these
+%TODO IMPORTANT: explain when/how 'wrong' error traces occur and how one specifies protocol/attacker around these
 
-% TODO: maybe list problems/results from modeling the protocols that are listed throughout the entire paper
+%TODO maybe list problems/results from modeling the protocols that are listed throughout the entire paper
 
 
 
@@ -139,7 +141,7 @@ A significant advantage of using a SAT solver as a blackbox to verify the securi
 The specification of possible attacks on the protocol that leads to the propositional formula is performed by using a framework based on multi-set rewriting. Because solving protocol insecurity problems is undecidable for an unbounded number of sessions, the user has to specify such a bound to perform verification using this approach.
 \cite{sat}
 
-% TODO: page 4 left side upper 1/3, it sounds almost like this bound does not change much, because there is always a bound k that it can be safely reduced to
+%TODO page 4 left side upper 1/3, it sounds almost like this bound does not change much, because there is always a bound k that it can be safely reduced to
 
 The authors provide semantics to perform this multi-set-rewriting to generate the propositional formula. They additionally developed an approach of how to safely eliminate non-determinism, which is e.g. associated with the generation of random values.
 Encoding techniques that were originally developed for planning to security protocols were adapted to be applicable to increase efficiency of the formula generation. Armando et al. were able to proof both soundness and completeness of this modified approach called \textit{SATMC}.
@@ -161,23 +163,32 @@ Compared to the \murphi verifier, \textit{SATMC} seems to be signficantly easier
 
 
 
-% TODO: mention maybe future extension to LTL
 
-
-
-\newpage
+%\newpage
 \section{Automatic Verification of Security Protocols in the Symbolic Model: the Verifier ProVerif}
 
-Proverif is a Verifier that works in the symbolic model, which makes it easier to perform fully automatic verification. A special property of this verifier is that it is able to verify protocols assuming an unbounded number of protocol executions. Because this is a generally undecidable problem, Proverif can not guarantee termination in all cases.\cite{ProVerif}
+ProVerif is a security protocol verifier that works in the symbolic model, which makes it easier to perform fully automatic verification compared to the alternative cryptographic model. 
+%TODO mention approaches that also work in symbolic model here
+A special property of this verifier is that it is able to verify protocols without restricting the number of protocol executions to a set bound, like e.g. \murphi \cite{murphi} and \textit{SATMC}\cite{sat} did. Because the problem of deciding a security property on an unbounded number of protocol executions combined with a nondeterministic adversary is a generally undecidable problem, ProVerif can not guarantee termination in all cases. Intuitively ProVerif internally translates the protocol combined with the attacker to a set of horn clauses, which is essentially an improvement on tree-automate because it keeps relational information on messages. These abstractions are the reason ProVerif is able to handle many protocols despite the exponential blowup.\cite{ProVerif}
 
-The protocol has to be specified in an extension of the pi calculus, which already supports a wide variety of cryptographic primitives out of the box. On this protocol, Proverif is able to proof a variety of security properties such as for example secrecy, authentication and some properties of observational equivalence.\cite{ProVerif}
+The input protocol has to be specified in an extension of the pi calculus, which already supports a wide variety of cryptographic primitives out of the box. Internally these primitives are modeled either as rewrite rules or equations. On this protocol, ProVerif is now able to proof a variety of security properties such as for example secrecy, authentication and some properties of observational equivalence.\cite{ProVerif}
 
-Proverif's efficieny comes from the automatic translation into horn clauses. Not only the protocol itself is represented in these clauses, but rather the attacker combined with the protocol. One could say that proverif abstracts much further away from the actual protocol than most approaches we encountered in this seminar. The set of horn clauses is internally simplified using resolution and additional optimisations. Particularly the optimisations which are specific to protocols reduce the number of clauses very significantly. Bruno Blanchet was able to proof that all these approximations are sound, which is essential to their usage as part of a verifier. All these approximations result in Proverif being able to handle very complex protocols.\cite{ProVerif}
+ProVerif's efficieny comes from the automatic translation into horn clauses. Not only the protocol itself is represented in these clauses, but rather the attacker combined with the protocol. One could say that ProVerif abstracts much further away from the actual protocol than all other approaches we encountered in this seminar.\cite{ProVerif}
 
-However there are a couple of tradeoffs, these approximations introduce. The two most impactful ones are, that the order of actions is abstracted entirely and that each action can be repeated an unbounded number of times at any later time. Particularly for protocols that contain temporary secrets, there is a possibility of Proverif outputting a false attack.
+In the so called \textit{saturate} phase, the set of horn clauses is internally simplified using resolution and additional optimisations on these clauses to reduce the number of clauses that have to be tracked. Particularly the optimisations which are specific to protocols reduce the number of clauses very significantly. \textit{Saturate} was proven to preserve derivability, which means that it is both sound and complete. This property is essential, because ProVerif tries to derive a ny fact that would violate the specified security property from the simplified set of horn clauses. If this search is successful, the derivability of \textit{saturate} implies that this derivation is also possible from the set of horn clauses that resulted directly from the translation process. Additionally this derivation search is also used to describe the attack, asssuming it was successful.\cite{ProVerif}
+
+Bruno Blanchet was able to proof that all the approximations introduced by the translation to horn clauses are sound, which is essential to ProVerif's usage as a verifier. Combined with the derivability of \textit{saturate}, this means that there can not exist any attack in practice that will not exist in ProVerifs abstraction. Unfortunatly this means that there is a possibility for false attacks being output by ProVerif.\cite{ProVerif}
+
+The possibility of false attacks originates from abstractions that are introduced in the translation to horn clauses. The two most impactful ones are, that the order of actions is abstracted entirely and that each action can be repeated an unbounded number of times at any later time. Particularly for protocols that contain temporary secrets, there is a risk of ProVerif outputting a false attack.
 This means that one has to additionally double-check an attack that is output by Proverif for validity. \cite{ProVerif}
 
-The ability to verify protocols without limitations on the number of sessions or the message size imply that Proverif is well suited to be used for the certification of protocols.\cite{ProVerif}
+Besides the abstractions, the other big disadvantage is the risk of not terminating. This risk was partly circumvented by Blanchet and Podelski, who were able to proof that ProVerif always terminates on \textit{tagged protocols}.\cite{tagging} It is also easy to transform any protocol into a tagged protocol, which makes this disadvantage not nearly as significant in practice.\cite{ProVerif}
+
+The ability to verify protocols without limitations on the number of sessions or the message size imply that ProVerif is well suited to be used for the certification of protocols. Particularly its performance combined with the flexibility in terms of the security properties it is able to proof are very impressive.\cite{ProVerif}
+
+It is also a interresting approach in general, because ProVerif abstracts much further away from the protocol executions themselfes, which is the reason it circumvents the state-space explosion problem in so many cases.
+
+
 
 
 \newpage
