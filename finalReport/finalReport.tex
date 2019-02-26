@@ -225,30 +225,38 @@ Unfortunatly, the authors provided no evaluation of their approach, which makes 
 %TODO study results? critique
 
 
-\newpage
+%\newpage
 \section{Automatic Discovery and Quantification of Information Leaks}
 
-Backes et al. developed an approach to not only discover information leaks but additionally specify which information is leaked and quantify that information leak.\cite{automatic_discovery_and_quantification}
+Backes et al. developed an approach, called \textit{DisQuant} to not only discover information leaks but additionally specify how much information is leaked which is used to quantify that information leak.\cite{automatic_discovery_and_quantification}
 
-Their solution provides the number of discovered equivalence classes and their respective sizes, without having to specify the equivalence relation manually. While existing qualitative approaches are able to e.g. determine the number of secret bits that are leaked, they do not provide a comprehensive measure to establish security guarantees.\cite{automatic_discovery_and_quantification}
+\textit{DisQuant} calculates the number of discovered equivalence classes that can not be distinguished based on their output behaviour without the user having to specify an equivalence relation manually. Aditionally they compute the size of these classes. While existing qualitative approaches are able to e.g. determine the number of secret bits that are leaked, they do not provide a comprehensive measure to establish security guarantees.\cite{automatic_discovery_and_quantification}
 
-The approach described in this publication starts by using an initial candidate, which is assumed to be the equivalence relation. It then refines the relation step by step until no further leaks are found in the current equivalence relation. This problem is formulated as a reachability problem and solved by a model-checker, which is used as a blackbox.\cite{automatic_discovery_and_quantification}
+The approach described in this publication starts by using an initial candidate, which is assumed to be the equivalence relation. It then refines the relation step by step by checking if there are additional leaks that are not represented by the relation until no further leaks are found in the current equivalence relation. This problem is formulated as a reachability problem and solved by a model-checker, which is used as a blackbox using self-composition.\cite{automatic_discovery_and_quantification}
 
-The resulting equivalence relation essentially describes what an attacker can learn about the input of the program by observing the programs output behaviour. The cardinality of these classes can be computed using LATTE.\cite{automatic_discovery_and_quantification}
+The resulting equivalence relation essentially describes what an attacker can learn about the input of the program by observing the programs output behaviour. The cardinality of these classes can be computed using the Lattice Point Enumeration Tool (LATTE).\cite{automatic_discovery_and_quantification}
 
 On the computed equivalence classes they apply Shannon Entropy, Guessing Entropy, Channel Capacity etc. to interpret the classes. This leads to easily human-readable metrics, such as the attackers uncertainty about the secret bits before and after a single guess.\cite{automatic_discovery_and_quantification}
 
-A advantage of this approach is that while the used model-checkers are not complete, they are sound which means that they might introduce an over-approximation of information leakage, but never an under-approximation. This means that the described approach can be used to certify the security of a program.\cite{automatic_discovery_and_quantification} Clearly, the over-approximation can also be a disadvantage in some cases. 
+An advantage of this approach is that the model-checkers that are used to solve the reachability problem of building the equivalence relation are sound but not complete, which means that they might introduce an over-approximation of information leakage, but never an under-approximation. This means that the described approach can be used to certify the security of a program because one can precisely specify an upper bound for the amount of information that is being leaked.\cite{automatic_discovery_and_quantification} While an over-approximiation is better than an under-approximation, it still has to be seen as a limitation.
 
-Another limitation of the described algorithms, is that they assume the termination of the program on any provided input.
+Another significant limitation of the described algorithm is the assumption that the input program always terminates on any input. This property might not be achievable in some cases, which limits the scenarios this approach could be used for.
 
-The experimental results contained in this publication should also be seen as an indicator that this approach might not be feasable in practice. Main reason for this is the runtime their algorithm takes even on simplified problems.\cite{automatic_discovery_and_quantification}
+The experimental results contained in this publication should also be seen as an indicator that this approach might not be feasable in practice. Main reason for this is the runtime their algorithm takes even on very simplified problems with very limited branchiung. These results are a strong reason to believe that this approach is not applicable to complex protocols at all.
+\cite{automatic_discovery_and_quantification}
+
+To counteract the issue of late termination a user is able to interrupt \textit{DisQuant} at any point in time. Interruption during the building of the equivalence relation leads to an under-approximation which means that the resulting equivalence relation can still be used to verify the \textit{insecurity} of the program. Interruption during the quantification phase on the other hand leads to over-approximation, which means that it can still be used to certify the \textit{security} of the program. While this is clearly a nice feature to have, interruptions still limits the gathered information, which means that it is not a solution for the very long runtime of their experimental results.
+\cite{automatic_discovery_and_quantification}
+
+Overall, this approach seems to be useful to e.g. calculate the probabilities of particularly brute-force attacks on simple applications due to the ability to quantify the leaked information of every guess. Unfortunatly the experimental results strongly indicate that the approach in its current state is not applicable to complex security protocols due to its long runtime. While \textit{DisQuant} only works with addition currently, it seems like support for full Presburger  arithmetic should be possible. It might also be possible that improvements on self-composition made by Aiken et al. enhance the performance of this approach.\cite{secure_information_flow_safety}
+
+%TODO not a very big fan, maybe more connections to other papers
 
 
 \newpage
 \section{Verifying Constant-Time Implementations}
 
-An entirely new attack vector, that is very hard to avoid entirely are so called timing attacks. Developing software which adheres to constant-time practices is not only very error-prone but also bottlenecks efficiency of software. In fact there have been a number of occasions were timing-based attacks were discovered on widely used software such as for example OpenSSL's RSA decryption.
+An entirely different attack vector, that is very hard to avoid entirely are so called timing attacks. Developing software which adheres to constant-time practices is not only very error-prone but also bottlenecks efficiency of software. These attacks are very relevant in practice, which can be seen on the number of occasions were timing-based attacks were discovered on widely used cryprographic software such as for example OpenSSL's RSA decryption\cite{verifying_constant_time_implementations} or the recent spectre and meltdown exploits. 
 
 % Maybe mention recent intel bugs with cache collisions here
 
