@@ -253,26 +253,36 @@ Overall, this approach seems to be useful to e.g. calculate the probabilities of
 %TODO not a very big fan, maybe more connections to other papers
 
 
-\newpage
+%\newpage
 \section{Verifying Constant-Time Implementations}
 
-An entirely different attack vector, that is very hard to avoid entirely are so called timing attacks. Developing software which adheres to constant-time practices is not only very error-prone but also bottlenecks efficiency of software. These attacks are very relevant in practice, which can be seen on the number of occasions were timing-based attacks were discovered on widely used cryprographic software such as for example OpenSSL's RSA decryption\cite{verifying_constant_time_implementations} or the recent spectre and meltdown exploits. 
+An entirely different attack vector, that is very hard to avoid entirely are so called timing attacks. Timing attack is any attack in which an attacker acquires secret information by observing the timing behaviour of some application. Developing software which adheres to constant-time practices is not only very error-prone but also bottlenecks efficiency of software. These attacks are very relevant in practice, which can be seen on the number of occasions were timing-based attacks were discovered on widely used cryprographic software such as for example OpenSSL's RSA decryption\cite{verifying_constant_time_implementations} or the recent spectre and meltdown exploits. 
 
 % Maybe mention recent intel bugs with cache collisions here
 
-Almeida et al. propose a new approach, called "ct-verif" to automatically verify whether  or not a timing attack is possible on the software that is being verified. In order to include most compiler-optimizations in their baseline of testing, their approach verifies LLVM assembly code, which also makes the approach easily transferable to all languages that can be compiled to LLVM assembly.\cite{verifying_constant_time_implementations}
+Almeida et al. propose a new approach, called \textit{ct-verif} to automatically verify whether  or not a timing attack is possible on the software that is being verified. In order to include most compiler-optimizations in their baseline of testing, their approach verifies LLVM assembly code, which also makes the approach easily transferable to all languages that can be compiled to LLVM assembly.\cite{verifying_constant_time_implementations}
 
-A commonly used guideline to secure software against such kind of attacks is that branching never depends on program secrets in any way. An even stronger policy would be that accesses memory addresses, and their order of access do not depend on any secrets as well. Clearly programmers are forced to deviate from conventional practices to fullfill policies like these.\cite{verifying_constant_time_implementations}
+A commonly used guideline to secure software against such kind of attacks is that branching never depends on program secrets in any way. An even stronger policy would be that all accesses of memory addresses, and their order of access do not depend on any secrets as well. Clearly programmers are forced to deviate from conventional practices to fullfill policies like these.\cite{verifying_constant_time_implementations}
 
-The tool ct-verif is fully automatic after the user specified which inputs and outputs are public to an attacker. A program P's program paths are independant of all program-secrets if assertion-safety of a program Q that is essentially a product of the P with itself holds.\cite{verifying_constant_time_implementations} Clearly, the construction of Q is inspired by self-composition. 
+The tool \textit{ct-verif} is fully automatic after the user specified which inputs and outputs are public to an attacker. A program $P$'s program paths are independant of all program-secrets if assertion-safety of a program $Q$ that is essentially a product of the P with itself holds.\cite{verifying_constant_time_implementations} Clearly, the construction of $Q$ is inspired heavily inspired by self-composition as formulated by Barthe et al.\cite{information_flow_by_self_composition} 
 
 Almeida et al. additionally provided a proof in Coq, which verified this reduction to be both sound and complete.\cite{verifying_constant_time_implementations}
 
-Additionally Almeida et al. provided a formalization of constant-time theory, which provides a foundation for constant-time policies used in practice.
+Additionally the authors provided a formalization of constant-time theory, which provides a foundation for constant-time policies used in practice.
 
-It was demonstrated on examples such as OpenSLL, NaCl, FourQlib and others, which supported the practical effectiveness of ct-verif. Overall the case study showed, that ct-verif is able to validate significantly more constant-time programs than the previously existing tools.\cite{verifying_constant_time_implementations}
+Similarly to the previously seen approaches of a downgrading function/policy, it is possible to manually mark certain branches as benign in \textit{ct-verif}. While this is clearly an advantage for real-world usage as it allows verification of programs that could otherwise not be verified, it brings the same disadvantages than its alternatives we previously saw. \textit{Human error} is introduced in the verification, which is clearly always a risk.
+
+\textit{Ct-verif}'s practical effeciteveness is supported by applications on examples such as OpenSLL, NaCl, FourQlib and others. Overall the case study showed, that \textit{ct-verif} is able to validate significantly more constant-time programs than the previously existing tools.
+\cite{verifying_constant_time_implementations}
+
+Clearly the approach is already working very well on full-size examples, which shows that the adaptation of the product construction scales very well even for more complex programs.
+\cite{verifying_constant_time_implementations}
 
 A potential problem of this approach is that it works on LLVM assembly, instead of machine code and while the LLVM assembly might fullfill the desired constant time policy, it is not entirely clear wheather this also holds for the resulting machine code in all cases.\cite{verifying_constant_time_implementations}
+
+%TODO last presentation notes to combine different approaches
+
+
 
 \newpage
 \includegraphics[scale = 0.72]{pictures/grading_scheme}\\
