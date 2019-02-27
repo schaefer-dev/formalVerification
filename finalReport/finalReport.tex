@@ -27,6 +27,8 @@ Information flow verification also turned out to be a prominent alternative by u
 Other notable concepts that were contained in this seminar was e.g. the idea by Backes et al. to quantify information leaks, instead of only discovering them. While the performance of the presented tool indicated that the taken approach might not be feasible in practice, it was still a very interesting idea to quantify the amount of secret information that gets leaked. It could be particularly interesting in very performance-critical scenarios in which adhering to some secrecy policy might be impossible, but one could use the quantification of leaks to find the best trade-off between performance and security.
 
 The last publication of the seminar focuses entirely on timing-based attacks, which are often forgotten about, but are clearly a huge thread in practice. The presented tool automatically verified the absence of such type of an attack, by performing static analysis on LLVM assembly making use of a \textit{self-composition} approach.
+
+After a presentation of all the papers that were part of this seminar with their advantages, limitations and connections I also included a personal conclusion about the main takeaways of the seminar at the end of this paper.
 \end{abstract}
 
 
@@ -108,7 +110,7 @@ Overall this paper provided a foundation for the application of self-composition
 %\newpage
 \section{Automated Analysis of Cryptographic Protocols using \murphi}
 
-\murphi is a tool to analyze cryptographic protocols using a state enumeration approach. In a feasibility study it was able to outperform similar finite-state exploration tools on the protocols that were tested. Notable difference were the more efficient approach of \murphi to counteract the state-space explosion problem and the ability to set interrupt points to guide the search by hand, which can also be helpful to work around the state-space explosion problem.\cite{murphi}
+\murphi is a tool to analyze cryptographic protocols using an explicit state enumeration approach. In a feasibility study it was able to outperform similar finite-state exploration tools on the protocols that were tested. Notable difference were the more efficient approach of \murphi to counteract the state-space explosion problem and the ability to set interrupt points to guide the progression search by hand, which can also be helpful to work around the state-space explosion problem.\cite{murphi}
 
 \murphi performs explicit state enumeration using either breadth-first or depth-first search to proof that all reachable states satisfy some specification that is provided by the user. The protocol has to be specified using the \murphi language, which can be extended to contain additional information for an attacker, such as leaking some supposedly secret values initially which would reflect the assumption that part of the system was compromised already prior to the attack. Due to the fact that \murphi performs explicit state enumeration, one has to limit the number of states, which is done by fixing system size parameters, such as the number of agents that perform the cryptographic protocol with each other. These limitations have to be specifially set by the user and \murphi is only able to guarantee correctness of this down-scaled version of the protocol. Clearly it is not trivial to set these numbers, as larger values often have exponential effect on the runtime of the tool.\cite{murphi} Regardless, it is an advantage that these bounds can easily be changed by a user. At the same time it is a disadvantage that the proof only holds for this down-scaled version of the protocol because there might be an attack possible which e.g. requires more active sessions.
 
@@ -119,7 +121,7 @@ Formulating a protocol in the \murphi language reveals some issues a user might 
 
 Similar issues arise when formulating an adversary to a protocol. The user has to specify the entire knowledge of the adversary and a finite set of actions that the adversary could perform at any point in time depending on the knowledge the adversary has gathered until this point.\cite{murphi}
 
-Clearly the user has to make a significant amount of non-trivial decisions before being able to run \murphi verification. This introduces quite a big risk of \textit{human error} introducing mistakes in e.g. the adversaries abilities, which might lead the \murphi tool to miss attacks. While the results of their study look promising compared to alternative tools, it is certainly a tool that requires at the very least a experienced user to minimize the risk of \textit{human error} invalidating the tools results. One might argue that this risk is too high to use this tool as the only form of validation.
+Clearly the user has to make a significant amount of non-trivial decisions before being able to run \murphi verification. This introduces quite a big risk of \textit{human error} introducing mistakes in e.g. the adversaries abilities, which might lead the \murphi tool to miss attacks. While the results of their study look promising compared to alternative tools, it is certainly a tool that requires at the very least a experienced user to minimize the risk of \textit{human error} invalidating the tools results. One might argue that this risk is too high to use this tool as the only form of validation. Especially
 
 %TODO IMPORTANT: explain when/how 'wrong' error traces occur and how one specifies protocol/attacker around these
 
@@ -157,7 +159,7 @@ The same experiments also showed that the tool outperforms state-of-the-art prot
 
 A great addition to this approach would be to allow security properties to be specified by generic \textit{LTL} formula, which was also mentioned by the authors. This addition would significantly increase the possibilities in the specification of security properties.
 
-Compared to the \murphi verifier, \textit{SATMC} seems to be signficantly easier to model the protocol for, particularly because \murphi relies on the users optimization of rules to reduce the state-space explosion problem. Regarding performance, \murphi seems to scale better with increasing message-depth, while \textit{SATMC} scales better with multiple agents.
+Compared to the \murphi verifier, \textit{SATMC} seems to be significantly easier to model the protocol for, particularly because \murphi relies on the users optimization of rules to reduce the state-space explosion problem. Regarding performance, \murphi seems to scale better with increasing message-depth, while \textit{SATMC} scales better with multiple agents.
 
 
 
@@ -196,9 +198,9 @@ ProVerif follows an interesting approach in general, because it abstracts much f
 
 Aiken et. al. developed a framework which improves on traditional type-based approaches and works better than the standart self composition approach, as formulated by Barthe, D'Argenio and Rezk.\cite{information_flow_by_self_composition}
 %TODO talk more about this paper which was contained in reading group
-The authors apply the self-composition approach (we already read about in the paper by Barthe, D'Argenio and Rezk) with the addition of information downgrading.\cite{secure_information_flow_safety}
+The authors apply the self-composition approach (we already read about in the paper by Barthe, D'Argenio and Rezk) with the addition of information downgrading and input the safety problem into a verifier that is used as a blackbox.\cite{secure_information_flow_safety}
 
-It is important to note, that only deterministic programs are being considered throughout this publication. 
+It is important to note, that only deterministic programs are being considered throughout this publication, which is a limitation of this approach.
 
 The authors were able to reduce an alternative definition of termination-insensitive secure information flow to a safety problem by making use of self-composition as part of their reduction. According to the authors it would be relatively easy to define a similar property for termination sensitive secure information flow using a liveness property.\cite{secure_information_flow_safety}
 
@@ -211,12 +213,12 @@ Unfortunatly, the self-composition approach seems to be too inefficient in pract
 To overcome the issues of self-composition, Aiken et. al. decided to make use of some advantages a type-based approach brings. They first apply a type-directed transformation on the input program that has to be verified. This transformation depends on a type system and outputs a program that is equivalent to the self-composition of the initial program. A specific type system for this use-case can be used to simplify the output program while maintaining important properties for safety analysis. This relatively inexpensive transformation causes the programs to be more digestible for the analysis tools. 
 \cite{secure_information_flow_safety}
 
-The result is clearly better than the type-based approach and improves the efficiency of the self-compositional approach significantly.
+While the approach is in theory not better than the general self-composition, the result is clearly better than the type-based approach and improves the efficiency of the self-compositional approach significantly.
 \cite{secure_information_flow_safety}
 
 A clear disadvantage that goes with the advantages a downgrading policy brings, is the risk of \textit{human error} that comes with it. While it might be reasonably easy to specify this policy for most examples, there might be programs in which this policy reaches high complexity, which increases the risk of downgrading information that was not supposed to be downgraded, simply by making a mistake when formulating the policy. This could possibly result in valid attacks not being found by the verifier.
 
-Unfortunately, the authors provided no evaluation of their approach, which makes this paper look more like an idea, that could be used as a starting point, rather than a finished solution. Particularly their translation of programs to make them more digestible, is specifically developed for this single use-case, which means that it probably can not be easily applied to other approaches to enhance them.
+Unfortunately, the authors provided no evaluation of their approach, which makes this paper look more like an idea, that could be used as a starting point, rather than a finished solution. Particularly their translation of programs to make them more digestible, is specifically developed for this single use-case, which means that it probably can not be easily applied to other approaches to enhance them. Also it is unfortunate that the usage of the verifier as black-box does not allow for intermediate results during verification.
 
 
 %TODO Section 3?
@@ -234,7 +236,8 @@ Backes et al. developed an approach, called \textit{DisQuant} to not only discov
 
 The approach described in this publication starts by using an initial candidate, which is assumed to be the equivalence relation. It then refines the relation step by step by checking if there are additional leaks that are not represented by the relation until no further leaks are found in the current equivalence relation. This problem is formulated as a reachability problem and solved by a model-checker, which is used as a blackbox using self-composition.\cite{automatic_discovery_and_quantification}
 
-The resulting equivalence relation essentially describes what an attacker can learn about the input of the program by observing the programs output behaviour. The cardinality of these classes can be computed using the Lattice Point Enumeration Tool (LATTE).\cite{automatic_discovery_and_quantification}
+The resulting equivalence relation essentially describes what an attacker can learn about the input of the program by observing the programs output behaviour. The cardinality of these classes can be computed using the Lattice Point Enumeration Tool (LATTE). The resulting equivalence classes can also be looked at and are easily human readable for not very complex programs, which can be a big advantage to understand the program behavior.
+\cite{automatic_discovery_and_quantification}
 
 On the computed equivalence classes they apply Shannon Entropy, Guessing Entropy, Channel Capacity etc. to interpret the classes. This leads to easily human-readable metrics, such as the attackers uncertainty about the secret bits before and after a single guess.\cite{automatic_discovery_and_quantification}
 
@@ -248,7 +251,7 @@ The experimental results contained in this publication should also be seen as an
 To counteract the issue of late termination a user is able to interrupt \textit{DisQuant} at any point in time. Interruption during the building of the equivalence relation leads to an under-approximation which means that the resulting equivalence relation can still be used to verify the \textit{insecurity} of the program. Interruption during the quantification phase on the other hand leads to over-approximation, which means that it can still be used to certify the \textit{security} of the program. While this is clearly a nice feature to have, interruptions still limits the gathered information, which means that it is not a solution for the very long run-time of their experimental results.
 \cite{automatic_discovery_and_quantification}
 
-Overall, this approach seems to be useful to e.g. calculate the probabilities of particularly brute-force attacks on simple applications due to the ability to quantify the leaked information of every guess. Unfortunatly the experimental results strongly indicate that the approach in its current state is not applicable to complex security protocols due to its long runtime. While \textit{DisQuant} only works with addition currently, it seems like support for full Presburger  arithmetic should be possible. It might also be possible that improvements on self-composition made by Aiken et al. enhance the performance of this approach.\cite{secure_information_flow_safety}
+Overall, this approach seems to be useful to e.g. calculate the probabilities of particularly brute-force attacks on simple applications due to the ability to quantify the leaked information of every guess. Unfortunatly the experimental results strongly indicate that the approach in its current state is not applicable to complex security protocols due to its long runtime. While \textit{DisQuant} only works with addition in the presented state, it seems like support for full Presburger  arithmetic should be possible. It might also be possible that improvements on self-composition made by Aiken et al. enhance the performance of this approach.\cite{secure_information_flow_safety}
 
 %TODO not a very big fan, maybe more connections to other papers
 
@@ -286,7 +289,7 @@ I think the authors of this publication did a very good job at explaining variou
 
 \section{Conclusion}
 
-My main takeaway of this seminar is, that there are significantly more, very distinct approaches to the verification of security properties than I expected. Personally Information-Flow approaches seemed the most intuitive to me as formulated by Sabelfeld et al.\cite{language_based_information_flow_security} and enhanced by both Barthe et al.\cite{information_flow_by_self_composition} and Terauchi et al. \cite{secure_information_flow_safety}. Particularly the approach of self-composition turned out to be very useful in this field.
+My main takeaway of this seminar is, that there are significantly more, very distinct approaches to the verification of security properties than I expected. Personally the Information-Flow approaches (as formulated by Sabelfeld et al.\cite{language_based_information_flow_security} and enhanced by both Barthe et al.\cite{information_flow_by_self_composition} and Terauchi et al. \cite{secure_information_flow_safety}) seemed the most intuitive solution to this problem on first glance. Particularly the approach of self-composition turned out to be very useful in this field.
 
 Backes et al. publication was also quite impressive to me, mainly because I think that adhering to some security property might not always be worth it for less security critical data. Still, I think it is reasonable to say, that a good trade-off between security and performance is still desirable. Quantifying information leaks would be very interesting to achieve this. But clearly it would also give a good metric to non-computer-scientists that are involved in a project, as these metrics are significantly easier to communicate and understand. Unfortunately the performance of the approach in their experiments was very disappointing, still I think the quantification of information leaks, maybe including approximations is a very interesting topic that could be expanded upon.
 
