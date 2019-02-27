@@ -16,9 +16,9 @@
 \begin{abstract}
 
 %TODO Motivation? design of security protocols error prone, can not be detected by functional testing
-In this course we generally talked about various formal methods of verifying security of software or protocols. The papers that were part of the reading session build a basis regarding model-checking in this field and a commonly occurring approach of self-composition, which was used to verify secure information flow of some program.
+In this course we generally talked about various formal methods of verifying security of software or protocols. The papers that were part of the reading session build a basis regarding model-checking in this field and a commonly occurring approach of self-composition, which was used to verify secure information flow of some program. On the other hand, \murphi as a prime example of classic forward state-exploration.
 
-The main problem of the model-checking approach was the state-space explosion problem, which gets introduced by the infinite number of sessions that the non-deterministic adversary is able to interact with. One way to overcome this issue is by 'redirecting' it to the user of the verifier, who inputs upper bounds for e.g. the number of sessions that are executed in parallel. While this makes the state-space finite, it clearly also weakens the security proof as there might be an attack which requires more sessions than the bound was set to.
+The main problem of the model-checking approach is the state-space explosion problem, which gets introduced by the infinite number of sessions that the non-deterministic adversary is able to interact with. One way to overcome this issue is by 'redirecting' it to the user of the verifier, who inputs upper bounds for e.g. the number of sessions that are executed in parallel. While this makes the state-space finite, it clearly also weakens the security proof as there might be an attack which requires more sessions than the bound was set to.
 
 A different approach is taken by tools such as \textit{ProVerif}, which abstracts much further away from the protocol executions themselves by building an alternative representation of the protocol which intuitively combines the protocol with the attacker already. While this does not guarantee termination as the state-space is still infinite it has proven itself to terminate most of the time in practice and requires much less human-intervention which obviously decreases the risk of \textit{human error}.
 
@@ -26,8 +26,7 @@ Information flow verification also turned out to be a prominent alternative by u
 
 Other notable concepts that were contained in this seminar was e.g. the idea by Backes et al. to quantify information leaks, instead of only discovering them. While the performance of the presented tool indicated that the taken approach might not be feasible in practice, it was still a very interesting idea to quantify the amount of secret information that gets leaked. It could be particularly interesting in very performance-critical scenarios in which adhering to some secrecy policy might be impossible, but one could use the quantification of leaks to find the best trade-off between performance and security.
 
-The last publication of the seminar focuses entirely on timing-based attacks, which are often forgotten about but are clearly a huge thread in practice. The presented tool automatically verified the absence of such type of an attack, by performing static analysis on LLVM assembly making use of a \textit{self-composition} approach.
-%TODO summarize idea and findings of the seminar
+The last publication of the seminar focuses entirely on timing-based attacks, which are often forgotten about, but are clearly a huge thread in practice. The presented tool automatically verified the absence of such type of an attack, by performing static analysis on LLVM assembly making use of a \textit{self-composition} approach.
 \end{abstract}
 
 
@@ -281,11 +280,33 @@ Clearly the approach is already working very well on full-size examples, which s
 
 A potential problem of this approach is that it works on LLVM assembly, instead of machine code and while the LLVM assembly might fullfill the desired constant time policy, it is not entirely clear wheather this also holds for the resulting machine code in all cases.\cite{verifying_constant_time_implementations}
 
+I think the authors of this publication did a very good job at explaining various kinds of timing attacks on very simple and understandable examples. This helped significantly to express the problems such attacks abuse and how hard it actually is to avoid all these problems.
+
 
 
 \section{Conclusion}
 
-My main takeaway of this seminar is, that there are significantly more, very distinct approaches to the verification of security properties than I expected. Personally Information-Flow approaches seemed the most intuitive to me as formulated by Sabelfeld et al.\cite{language_based_information_flow_security}.
+My main takeaway of this seminar is, that there are significantly more, very distinct approaches to the verification of security properties than I expected. Personally Information-Flow approaches seemed the most intuitive to me as formulated by Sabelfeld et al.\cite{language_based_information_flow_security} and enhanced by both Barthe et al.\cite{information_flow_by_self_composition} and Terauchi et al. \cite{secure_information_flow_safety}. Particularly the approach of self-composition turned out to be very useful in this field.
+
+Backes et al. publication was also quite impressive to me, mainly because I think that adhering to some security property might not always be worth it for less security critical data. Still, I think it is reasonable to say, that a good trade-off between security and performance is still desirable. Quantifying information leaks would be very interesting to achieve this. But clearly it would also give a good metric to non-computer-scientists that are involved in a project, as these metrics are significantly easier to communicate and understand. Unfortunately the performance of the approach in their experiments was very disappointing, still I think the quantification of information leaks, maybe including approximations is a very interesting topic that could be expanded upon.
+
+Timing attacks are an attack vector I underestimated before reading the Verifying Constant-Time Implementations paper by Almeida et al.\cite{verifying_constant_time_implementations} Their variety of examples of vulnerable code helped me a lot to understand how hard it is to avoid such attacks entirely. Clearly verification of constant-time properties is absolutely essential.
+
+By far the most impressive paper to me was the publication of the verifier ProVerif by Bruno Blanchet.\cite{ProVerif} I am not sure how much this is influenced by the fact, that I presented the paper, but I was really impressed by the sound translation to the set of horn clauses included in ProVerif. The following optimizations using resolution, which is guided by a free selection function were entirely new to me, but quite intuitive after understanding the logics behind these approaches. I was particularly impressed that all these abstractions, which basically do not even abstract the protocol itself but rather an non-deterministic adversary interacting with the protocol, were proven to be sound. The fact that so many abstractions can be made, which makes ProVerif work very efficiently on very complex protocols, combined with the fact that termination is guaranteed on tagged protocols seemed like a very good combination to approach a problem, that was proven to be undecidable by Durgin et al.\cite{DLMS99}
+I think that the ease of use is also an underestimated advantage of a tool like ProVerif. Many of the approaches we discussed as part of this seminar either require the user to specify some bounds for the number of sessions or other details that are important for the verification process additionally to the protocol specification. All this additional input not only requires the user to have some expertise with the verifier, but also introduces or increases the risk of \textit{human error}. Clearly the main goal of verification is to find problems, that were previously missed by humans. So I think that relying on human information during verification should be avoided as much as possible. ProVerif is basically the optimal solution in that regard, because the user only has to specify the input protocol in a standardized syntax and the property one would like to proof. Clearly both these inputs can not be avoided as they essentially describe the bare minimum of the task that should be solved by the verifier.
+False attacks and not guaranteed termination on non-tagged protocols were the only real disadvantages of the ProVerif verifier.
+Unfortunately the paper does not really quantify how big of a problem these false attacks are, but the number of protocols that were verified using ProVerif indicate, that it might not happen that often when temporary secrets are not used.
+
+
+\vspace{1cm}
+
+An interesting discussion after the last presentation was about possible combinations of the approaches we have seen during the seminar. 
+
+The first idea that came to my mind was the application of information downgrading as presented by Terauchi et al.\cite{secure_information_flow_safety} on the last publication by Almeida et al.\cite{verifying_constant_time_implementations}. One could replace the manual marking of benign branches that way. The downgrading could be modeled by the user modifying the leakage function. In the worst case its still as much work, but in many cases the affected variables and conditions might overlap and it might be significantly less work compared to annotating all benign branches separately. Also formulating the downgrading in an explicit way seems much less prone to \textit{human error} than manually marking parts of the code to me, although that might be subjective. In my opinion, by just going over the code and marking branches as benign one could very quickly overlook something important and mark a non-benign branch as benign, which might cause verification to pass, despite a critical security bug.
+
+Another extension that would be very interesting, is the quantification of timing-based information leaks. Unfortuantly the approach by Backes et al.\cite{automatic_discovery_and_quantification} is very different and it would probably require an entirely new approach. Still the quantification of leaks is particularly interesting for timing-based attacks, because especially here a trade-off between performance and security might be especially desirable.
+
+The publication of Backes et al.\cite{automatic_discovery_and_quantification} might see performance improvements when parts of the type-based approach as seen in the \textit{Secure Information Flow as a Safety Problem} paper are used instead of using pure self-composition. Unfortunatly both models are significantly different and it seems impossible to transfer the approach entirely. But even some parts might help to significantly improve performance, which is clearly the main problem of the approach.
 
 
 \newpage
