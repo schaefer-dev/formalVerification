@@ -16,18 +16,18 @@
 \begin{abstract}
 
 %TODO Motivation? design of security protocols error prone, can not be detected by functional testing
-In this course we generally talked about various formal methods of verifying security of software or protocols. The papers that were part of the reading seassion build a basis regarding model-checking in this field and a commonly occuring approach of self-composition, which was used to verify secure information flow of some program.
+In this course we generally talked about various formal methods of verifying security of software or protocols. The papers that were part of the reading session build a basis regarding model-checking in this field and a commonly occurring approach of self-composition, which was used to verify secure information flow of some program.
 
-The main problem of the model-checking approach was the state-space explosion problem, which gets introduced by the infinite number of sessions that the nondeterministic adversary is able to interact with. One way to overcome this issue is by 'redirecting' it to the user of the verifier, who inputs upper bounds for e.g. the number of sessions that are executed in parallel. While this makes the state-space finite, it clearly also weakens the security proof as there might be an attack which requires more sessions than the bound was set to.
+The main problem of the model-checking approach was the state-space explosion problem, which gets introduced by the infinite number of sessions that the non-deterministic adversary is able to interact with. One way to overcome this issue is by 'redirecting' it to the user of the verifier, who inputs upper bounds for e.g. the number of sessions that are executed in parallel. While this makes the state-space finite, it clearly also weakens the security proof as there might be an attack which requires more sessions than the bound was set to.
 
 A different approach is taken by tools such as \textit{ProVerif}, which abstracts much further away from the protocol executions themselves by building an alternative representation of the protocol which intuitively combines the protocol with the attacker already. While this does not guarantee termination as the state-space is still infinite it has proven itself to terminate most of the time in practice and requires much less human-intervention which obviously decreases the risk of \textit{human error}.
 
-Information flow verification also turned out to be a prominent alternative by using the approach of \textit{self-composition} to formulate a safety property on a self-composed program which guarantees some security policy on the original program such as \textit{noninterference}. With such static language-based analysis at compile time it is possible to express end-to-end security policies but unfortunatly these systems are quite hard to extend and every extension would require a new soundness proof.
+Information flow verification also turned out to be a prominent alternative by using the approach of \textit{self-composition} to formulate a safety property on a self-composed program which guarantees some security policy on the original program such as \textit{noninterference}. With such static language-based analysis at compile time it is possible to express end-to-end security policies but unfortunately these systems are quite hard to extend and every extension would require a new soundness proof.
 
-Other notable concepts that were contained in this seminar was e.g. the idea by Backes et al. to quantify information leaks, instead of only discovering them. While the performance of the presented tool indicated that the taken approach might not be feasable in practice, it was still a very interresting idea to quantify the amount of secret information that gets leaked. It could be particularly interresting in very performance-criticial scenarios in which adhering to some secrecy policy might be impossible, but one could use the quantification of leaks to find the best tradeoff between performance and security.
+Other notable concepts that were contained in this seminar was e.g. the idea by Backes et al. to quantify information leaks, instead of only discovering them. While the performance of the presented tool indicated that the taken approach might not be feasible in practice, it was still a very interesting idea to quantify the amount of secret information that gets leaked. It could be particularly interesting in very performance-critical scenarios in which adhering to some secrecy policy might be impossible, but one could use the quantification of leaks to find the best trade-off between performance and security.
 
-The last publication of the seminar focuses entirely on timing-based attacks, which are often forgotten about but are clearly a huge thread in practice. The presented tool automatically verified the abscence of such type of an attack, by performing static analysis on LLVM assembly making use of a \textit{self-composition} approach.
-% TODO: summarize idea and findings of the seminar
+The last publication of the seminar focuses entirely on timing-based attacks, which are often forgotten about but are clearly a huge thread in practice. The presented tool automatically verified the absence of such type of an attack, by performing static analysis on LLVM assembly making use of a \textit{self-composition} approach.
+%TODO summarize idea and findings of the seminar
 \end{abstract}
 
 
@@ -42,9 +42,9 @@ In a symbolic model, messages are being represented by terms which formulate cer
 
 During et al. were able to proof that the secrecy problem of a security protocol is undecidable for such an attacker model if the number of protocol executions and random values (nonces) are unbounded.\cite{DLMS99} If one is able to keep the number of protocol executions bounded the secrecy problem was proven to be NP-complete by Rusinowitch and Turuani.\cite{RT01} This proof motivated development of model checkers in which the user explicitly specifies the number of protocol executions the model checker should search through which are in fact still useful in practice as most attacks on realistic protocols only require a few sessions.\cite{model_checking_security_protocols}
 
-Still, this has to be considered a limitation as there might be attacks in practice which require the interleaving of a larger number of instances. Generally this publication outlines, that it is already hard to define a security property that is being satisfied, will not limiting the programs usefullnes for legitimate users.
+Still, this has to be considered a limitation as there might be attacks in practice which require the interleaving of a larger number of instances. Generally this publication outlines, that it is already hard to define a security property that is being satisfied, will not limiting the programs usefulness for legitimate users.
 
-Overall this paper summarizes a large number of important terms, security properties and other definitions that are helpful, specifically regarding to the application of model checking on security protocols. Later chapters provide examples of practical applications of such techniques using a variety of different ideas, including outlines of promising approaches for the future.
+Overall this paper summarizes a large number of important terms, security properties and other definitions that are helpful, specifically regarding to the application of model checking on security protocols. Overall it sets a foundation for all the following publications. Later chapters provide examples of practical applications of such techniques using a variety of different ideas, including outlines of promising approaches for the future.
 
 %TODO MAYBE: Pick important parts of definitions and list them here or a bit later maybe
 
@@ -64,7 +64,7 @@ Sabelfeld et al. explain a promising new approach to guarantee that secret input
 
 The approach, called \textit{Information-flow control} is a mechanism to enforce such policies. The analysis that is performed must then proof that no information flow exists, that would violate the previously specified policies.\cite{language_based_information_flow_security}
 
-There are a significant number of channels one could leak information over, which are not directly transfering data. An example for such channels would be \textit{termination channels} and \textit{timing channels}, which are related to an attackers ability to observe the behaviour of the program execution additionally to its output. This means that e.g. the duration of an computation or the non-termination of the program might leak information about secret values that were used as part of these computations.
+There are a significant number of channels one could leak information over, which are not directly transferring data. An example for such channels would be \textit{termination channels} and \textit{timing channels}, which are related to an attackers ability to observe the behavior of the program execution additionally to its output. This means that e.g. the duration of an computation or the non-termination of the program might leak information about secret values that were used as part of these computations.
 The same applies to a number of additional channels, which are also not used to transfer data but still offer possible information leaks.\cite{language_based_information_flow_security} % TODO: List other Covert Channels
 
 The focus of this paper is on a type checking approach to perform static information-flow analysis at compile time. Such an approach has already been implemented in the Jif compiler for Java.\cite{JFlow} The general idea is that a \textit{security type} is assigned to every program expression. This security type contains the ordinary type of the expression (such as int, float, string, etc.) and additionally a static label which describes how the resulting value can be used. This value is static and not determined on runtime, such that it can be used to verify the control flow on compile-time already.\cite{language_based_information_flow_security}
@@ -72,8 +72,7 @@ To be able to track implicit flows correctly, dependencies of the program-counte
 
 The advantage of performing verification on compile time, compared to checking during runtime is that one is not limited to a single program execution, instead one can proof security of all possible program paths.\cite{language_based_information_flow_security} Additionally such an approach solves the problem of expressing end-to-end security policies, which is currently a problem research is facing. Unfortunatly there are still some problems that have to be overcome, mainly related to the lack of expressiveness of current security-type systems and the need of semantics for embedded or concurrent systems. Generally these type-systems are quite hard to extend and the soundness proof would have to be repeated for every extension.\cite{language_based_information_flow_security}
 
-This publication serves as an overview of current research in the field of information flow security with a focus on static analysis. The first paper already mentioned such an approach as a possible alternative, which is for example used by the AVISPA tool.\cite{model_checking_security_protocols} 
-
+This publication serves as an overview of current research in the field of information flow security with a focus on static analysis. The first paper already mentioned such an approach as a possible alternative, which is for example used by the AVISPA tool.\cite{model_checking_security_protocols}
 
 
 %TODO second half of this paper basically not contained in this summary
@@ -84,7 +83,7 @@ This publication serves as an overview of current research in the field of infor
 %\newpage
 \section{Secure Information flow by self-composition}
 
-Type systems are a way to enforce secure information flow of a program but are generally hard to extend, which is particularly disadvantagous when additions have to be made to verify a new security policy. This was one of the problems the previously presented publication by Sabelfeld et al. was still facing.
+Type systems are a way to enforce secure information flow of a program but are generally hard to extend, which is particularly disadvantageous when additions have to be made to verify a new security policy. This was one of the problems the previously listed publication by Sabelfeld et al. was still facing.
 \cite{language_based_information_flow_security} 
 
 An alternative to these type systems is to use a more flexible approach of program logics, which this publication focuses on. Barthe et al. extended the idea of self-composition which reduces the problem to a safety property of the composition of a program with itself. Self-composition is essentially composing the program $P$ with a renaming of itself, resulting in a new program $Q$ that is used during the verification process.
@@ -94,7 +93,7 @@ Information flow properties are properties that correspond to at least two execu
 \cite{information_flow_by_self_composition}
 %TODO paragraph above maybe to close to paper wording?
 
-This reduction opens up a new way to apply (sound) programming logics to characterise non-interferance in an alternative way using this constructed program $Q$. The approach additionally allows a user to specify that some information can be leaked without violating the safety property immediately by defining the so called \textit{indistinguishability relation} accordingly. This relation intuitively defines, which outputs should be considered equal or different, which affects the attackers ability to distinguish them. There are many cases in which such minor information leaks are necessary to maintain the usefulness of a program. A practical example of this would be for example, that an adversary is unable to distinguish between two secret lists, if their average value is equal.
+This reduction opens up a new way to apply (sound) programming logics to characterize non-interference in an alternative way using this constructed program $Q$. The approach additionally allows a user to specify that some information can be leaked without violating the safety property immediately by defining the so called \textit{indistinguishability relation} accordingly. This relation intuitively defines, which outputs should be considered equal or different, which affects the attackers ability to distinguish them. There are many cases in which such minor information leaks are necessary to maintain the usefulness of a program. A practical example of this would be for example, that an adversary is unable to distinguish between two secret lists, if their average value is equal.
 \cite{information_flow_by_self_composition}
 
 A problem of the approach that was presented in this paper, is the limitation to abstract values of variables
@@ -102,7 +101,7 @@ A problem of the approach that was presented in this paper, is the limitation to
 
 Still, the approach has to be considered very flexible as it can be used to proof a variety of policies without proving soundness repeatedly. Especially compared to security-type systems this is a clear advantage.
 
-Overall this paper provided a foundation for the application of self-composition in the field of securing information-flow in programms. The authors provided proofs for their entire formal theory, which makes this publication a great foundation to extend on.
+Overall this paper provided a foundation for the application of self-composition in the field of securing information-flow in programs. The authors provided proofs for their entire formal theory, which makes this publication a great foundation to extend on.
 
 
 
@@ -135,7 +134,7 @@ Clearly the user has to make a significant amount of non-trivial decisions befor
 
 This approach interprets violations of a protocol as reachability problens, which means that one can apply any SAT solver to solve the reachability problem efficietly. To achieve this, one has to build a propositional formula which models possible attacks on the protocol. If the SAT solver that is used to check this propositional formula for satisfiability is able to find a solution, this solution specifies an attack on the protocol and the protocol was proven to be insecure for the specified bounds.\cite{sat}
 
-A significant advantage of using a SAT solver as a blackbox to verify the security of a protocol, is that all improvement in the field of SAT solvers can be equally used to enhance this approach. The already very efficient modern SAT solvers lead to very promising results in the experimental protocol verification that was performed by Armando et al. Their approach already achieved similar performance than state of the art alternatives.
+A significant advantage of using a SAT solver as a black-box to verify the security of a protocol, is that all improvement in the field of SAT solvers can be equally used to enhance this approach. The already very efficient modern SAT solvers lead to very promising results in the experimental protocol verification that was performed by Armando et al. Their approach already achieved similar performance than state of the art alternatives.
 \cite{sat}
 
 The specification of possible attacks on the protocol that leads to the propositional formula is performed by using a framework based on multi-set rewriting. Because solving protocol insecurity problems is undecidable for an unbounded number of sessions, the user has to specify such a bound to perform verification using this approach.
@@ -154,12 +153,12 @@ Conducted experiments indicated that the resulting formula scales better with a 
 \cite{sat}
 
 
-The same experiments also showed that the tool outperforms state-of-the-art protocol analysers even on industrial strength security protocols, which could be considered surprising considering the exponential scaling problem.
+The same experiments also showed that the tool outperforms state-of-the-art protocol analyzers even on industrial strength security protocols, which could be considered surprising considering the exponential scaling problem.
 \cite{sat}
 
-A great addition to this approach would be to allow security properties to be specified by generic \textit{LTL} formulae, which was also mentioned by the authors. This addition would significantly increase the possibilities in the specification of security properties.
+A great addition to this approach would be to allow security properties to be specified by generic \textit{LTL} formula, which was also mentioned by the authors. This addition would significantly increase the possibilities in the specification of security properties.
 
-Compared to the \murphi verifier, \textit{SATMC} seems to be signficantly easier to model the protocol for, particularly because \murphi relies on the users optimizations of rules to reduce the state-space explosion problem. Regarding performance, \murphi seems to scale better with increasing message-depth, while \textit{SATMC} scales better with multiple agents.
+Compared to the \murphi verifier, \textit{SATMC} seems to be signficantly easier to model the protocol for, particularly because \murphi relies on the users optimization of rules to reduce the state-space explosion problem. Regarding performance, \murphi seems to scale better with increasing message-depth, while \textit{SATMC} scales better with multiple agents.
 
 
 
@@ -186,7 +185,9 @@ Besides the abstractions, the other big disadvantage is the risk of not terminat
 
 The ability to verify protocols without limitations on the number of sessions or the message size imply that ProVerif is well suited to be used for the certification of protocols. Particularly its performance combined with the flexibility in terms of the security properties it is able to proof are very impressive.\cite{ProVerif}
 
-It is also a interresting approach in general, because ProVerif abstracts much further away from the protocol executions themselfes, which is the reason it circumvents the state-space explosion problem in so many cases.
+These advantages are confirmed by a variety of real-world applications that used ProVerif to proof desired security properties. In some of  these cases, critical security vulnerabilities were identified and fixed in the verification process.
+
+ProVerif follows an interesting approach in general, because it abstracts much further away from the protocol executions themselves than most alternatives, which is the reason it circumvents the state-space explosion problem in so many cases. It might be possible to find similar abstractions in other fields, which nobody has thought of by now.
 
 
 
@@ -208,7 +209,7 @@ This is clearly a very desirable property as many programs will require such sce
 
 Unfortunatly, the self-composition approach seems to be too inefficient in practice, even combined with state-of-the-art safety analysis tools like BLAST. In many of these cases a type-based approach will have no problem to verify programs that fail to terminate using the self-composition approach. According to the authors of this publication it seems unlikely that any future advances of tools like BLAST (or alternatives) will change that.\cite{secure_information_flow_safety}
 
-To overcome the issues of self-composition, Aiken et. al. decided to make use of some advantages a type-based approach brings. They first apply a type-directed transformation on the input program that has to be verified. This transformation depends on a type system and outputs a program that is equivalent to the self-composition of the initial program. A specific type system for this usecase can be used to simplify the output program while maintaining important properties for safety analysis. This relatively inexpensive transformation causes the programs to be more digestible for the analysis tools. 
+To overcome the issues of self-composition, Aiken et. al. decided to make use of some advantages a type-based approach brings. They first apply a type-directed transformation on the input program that has to be verified. This transformation depends on a type system and outputs a program that is equivalent to the self-composition of the initial program. A specific type system for this use-case can be used to simplify the output program while maintaining important properties for safety analysis. This relatively inexpensive transformation causes the programs to be more digestible for the analysis tools. 
 \cite{secure_information_flow_safety}
 
 The result is clearly better than the type-based approach and improves the efficiency of the self-compositional approach significantly.
@@ -216,7 +217,7 @@ The result is clearly better than the type-based approach and improves the effic
 
 A clear disadvantage that goes with the advantages a downgrading policy brings, is the risk of \textit{human error} that comes with it. While it might be reasonably easy to specify this policy for most examples, there might be programs in which this policy reaches high complexity, which increases the risk of downgrading information that was not supposed to be downgraded, simply by making a mistake when formulating the policy. This could possibly result in valid attacks not being found by the verifier.
 
-Unfortunatly, the authors provided no evaluation of their approach, which makes this paper look more like an idea, that could be used as a starting point, rather than a finished solution. Particularly their translation of programs to make them more digestible, is specifically developed for this single usecase, which means that it probably can not be easily applied to other approaches to enhance them.
+Unfortunately, the authors provided no evaluation of their approach, which makes this paper look more like an idea, that could be used as a starting point, rather than a finished solution. Particularly their translation of programs to make them more digestible, is specifically developed for this single use-case, which means that it probably can not be easily applied to other approaches to enhance them.
 
 
 %TODO Section 3?
@@ -238,14 +239,14 @@ The resulting equivalence relation essentially describes what an attacker can le
 
 On the computed equivalence classes they apply Shannon Entropy, Guessing Entropy, Channel Capacity etc. to interpret the classes. This leads to easily human-readable metrics, such as the attackers uncertainty about the secret bits before and after a single guess.\cite{automatic_discovery_and_quantification}
 
-An advantage of this approach is that the model-checkers that are used to solve the reachability problem of building the equivalence relation are sound but not complete, which means that they might introduce an over-approximation of information leakage, but never an under-approximation. This means that the described approach can be used to certify the security of a program because one can precisely specify an upper bound for the amount of information that is being leaked.\cite{automatic_discovery_and_quantification} While an over-approximiation is better than an under-approximation, it still has to be seen as a limitation.
+An advantage of this approach is that the model-checkers that are used to solve the reachability problem of building the equivalence relation are sound but not complete, which means that they might introduce an over-approximation of information leakage, but never an under-approximation. This means that the described approach can be used to certify the security of a program because one can precisely specify an upper bound for the amount of information that is being leaked.\cite{automatic_discovery_and_quantification} While an over-approximation is better than an under-approximation, it still has to be seen as a limitation.
 
 Another significant limitation of the described algorithm is the assumption that the input program always terminates on any input. This property might not be achievable in some cases, which limits the scenarios this approach could be used for.
 
-The experimental results contained in this publication should also be seen as an indicator that this approach might not be feasable in practice. Main reason for this is the runtime their algorithm takes even on very simplified problems with very limited branchiung. These results are a strong reason to believe that this approach is not applicable to complex protocols at all.
+The experimental results contained in this publication should also be seen as an indicator that this approach might not be feasible in practice. Main reason for this is the run-time their algorithm takes even on very simplified problems with very limited branching. These results are a strong reason to believe that this approach is not applicable to complex protocols at all.
 \cite{automatic_discovery_and_quantification}
 
-To counteract the issue of late termination a user is able to interrupt \textit{DisQuant} at any point in time. Interruption during the building of the equivalence relation leads to an under-approximation which means that the resulting equivalence relation can still be used to verify the \textit{insecurity} of the program. Interruption during the quantification phase on the other hand leads to over-approximation, which means that it can still be used to certify the \textit{security} of the program. While this is clearly a nice feature to have, interruptions still limits the gathered information, which means that it is not a solution for the very long runtime of their experimental results.
+To counteract the issue of late termination a user is able to interrupt \textit{DisQuant} at any point in time. Interruption during the building of the equivalence relation leads to an under-approximation which means that the resulting equivalence relation can still be used to verify the \textit{insecurity} of the program. Interruption during the quantification phase on the other hand leads to over-approximation, which means that it can still be used to certify the \textit{security} of the program. While this is clearly a nice feature to have, interruptions still limits the gathered information, which means that it is not a solution for the very long run-time of their experimental results.
 \cite{automatic_discovery_and_quantification}
 
 Overall, this approach seems to be useful to e.g. calculate the probabilities of particularly brute-force attacks on simple applications due to the ability to quantify the leaked information of every guess. Unfortunatly the experimental results strongly indicate that the approach in its current state is not applicable to complex security protocols due to its long runtime. While \textit{DisQuant} only works with addition currently, it seems like support for full Presburger  arithmetic should be possible. It might also be possible that improvements on self-composition made by Aiken et al. enhance the performance of this approach.\cite{secure_information_flow_safety}
@@ -256,7 +257,7 @@ Overall, this approach seems to be useful to e.g. calculate the probabilities of
 %\newpage
 \section{Verifying Constant-Time Implementations}
 
-An entirely different attack vector, that is very hard to avoid entirely are so called timing attacks. Timing attack is any attack in which an attacker acquires secret information by observing the timing behaviour of some application. Developing software which adheres to constant-time practices is not only very error-prone but also bottlenecks efficiency of software. These attacks are very relevant in practice, which can be seen on the number of occasions were timing-based attacks were discovered on widely used cryprographic software such as for example OpenSSL's RSA decryption\cite{verifying_constant_time_implementations} or the recent spectre and meltdown exploits. 
+An entirely different attack vector, that is very hard to avoid entirely are so called timing attacks. Timing attack is any attack in which an attacker acquires secret information by observing the timing behaviour of some application. Developing software which adheres to constant-time practices is not only very error-prone but also bottlenecks efficiency of software. These attacks are very relevant in practice, which can be seen on the number of occasions were timing-based attacks were discovered on widely used cryprographic software such as for example OpenSSL's RSA decryption\cite{verifying_constant_time_implementations} or the recent Spectre and Meltdown exploits.\cite{spectre,meltdown} 
 
 % Maybe mention recent intel bugs with cache collisions here
 
@@ -272,7 +273,7 @@ Additionally the authors provided a formalization of constant-time theory, which
 
 Similarly to the previously seen approaches of a downgrading function/policy, it is possible to manually mark certain branches as benign in \textit{ct-verif}. While this is clearly an advantage for real-world usage as it allows verification of programs that could otherwise not be verified, it brings the same disadvantages than its alternatives we previously saw. \textit{Human error} is introduced in the verification, which is clearly always a risk.
 
-\textit{Ct-verif}'s practical effeciteveness is supported by applications on examples such as OpenSLL, NaCl, FourQlib and others. Overall the case study showed, that \textit{ct-verif} is able to validate significantly more constant-time programs than the previously existing tools.
+\textit{Ct-verif}'s practical effectiveness is supported by applications on examples such as OpenSLL, NaCl, FourQlib and others. Overall the case study showed, that \textit{ct-verif} is able to validate significantly more constant-time programs than the previously existing tools.
 \cite{verifying_constant_time_implementations}
 
 Clearly the approach is already working very well on full-size examples, which shows that the adaptation of the product construction scales very well even for more complex programs.
@@ -280,8 +281,11 @@ Clearly the approach is already working very well on full-size examples, which s
 
 A potential problem of this approach is that it works on LLVM assembly, instead of machine code and while the LLVM assembly might fullfill the desired constant time policy, it is not entirely clear wheather this also holds for the resulting machine code in all cases.\cite{verifying_constant_time_implementations}
 
-%TODO last presentation notes to combine different approaches
 
+
+\section{Conclusion}
+
+My main takeaway of this seminar is, that there are significantly more, very distinct approaches to the verification of security properties than I expected. Personally Information-Flow approaches seemed the most intuitive to me as formulated by Sabelfeld et al.\cite{language_based_information_flow_security}.
 
 
 \newpage

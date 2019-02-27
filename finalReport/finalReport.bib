@@ -1,4 +1,66 @@
-@inproceedings {verifying_constant_time_implementations,
+@article{spectre,
+  author    = {Paul Kocher and
+               Daniel Genkin and
+               Daniel Gruss and
+               Werner Haas and
+               Mike Hamburg and
+               Moritz Lipp and
+               Stefan Mangard and
+               Thomas Prescher and
+               Michael Schwarz and
+               Yuval Yarom},
+  title     = {Spectre Attacks: Exploiting Speculative Execution},
+  journal   = {CoRR},
+  volume    = {abs/1801.01203},
+  year      = {2018},
+  url       = {http://arxiv.org/abs/1801.01203},
+  archivePrefix = {arXiv},
+  eprint    = {1801.01203},
+  timestamp = {Mon, 13 Aug 2018 16:48:36 +0200},
+  biburl    = {https://dblp.org/rec/bib/journals/corr/abs-1801-01203},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@article{meltdown,
+  author    = {Moritz Lipp and
+               Michael Schwarz and
+               Daniel Gruss and
+               Thomas Prescher and
+               Werner Haas and
+               Stefan Mangard and
+               Paul Kocher and
+               Daniel Genkin and
+               Yuval Yarom and
+               Mike Hamburg},
+  title     = {Meltdown},
+  journal   = {CoRR},
+  volume    = {abs/1801.01207},
+  year      = {2018},
+  url       = {http://arxiv.org/abs/1801.01207},
+  archivePrefix = {arXiv},
+  eprint    = {1801.01207},
+  timestamp = {Mon, 13 Aug 2018 16:47:39 +0200},
+  biburl    = {https://dblp.org/rec/bib/journals/corr/abs-1801-01207},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@article{tagging,
+title = "Verification of cryptographic protocols: tagging enforces termination",
+journal = "Theoretical Computer Science",
+volume = "333",
+number = "1",
+pages = "67 - 90",
+year = "2005",
+note = "Foundations of Software Science and Computation Structures",
+issn = "0304-3975",
+doi = "https://doi.org/10.1016/j.tcs.2004.10.018",
+url = "http://www.sciencedirect.com/science/article/pii/S030439750400708X",
+author = "Bruno Blanchet and Andreas Podelski",
+keywords = "Cryptographic protocols, Horn clauses, Resolution, Termination, Tagging",
+abstract = "We investigate a resolution-based verification method for secrecy and authentication properties of cryptographic protocols. In experiments, we could enforce its termination by tagging, a syntactic transformation of messages that leaves attack-free executions invariant. In this paper, we generalize the experimental evidence: we prove that the verification method always terminates for tagged protocols."
+}
+
+@inproceedings{verifying_constant_time_implementations,
 author = {Jose Bacelar Almeida and Manuel Barbosa and Gilles Barthe and Fran{\c c}ois Dupressoir and Michael Emmi},
 title = {Verifying Constant-Time Implementations},
 booktitle = {25th {USENIX} Security Symposium ({USENIX} Security 16)},
